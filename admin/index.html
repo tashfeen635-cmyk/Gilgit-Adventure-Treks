@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Admin Panel</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="admin-topbar">
+    <h1>Gilgit Adventure Treks — Admin</h1>
+    <div class="topbar-right">
+      <span class="admin-user" id="adminUser"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="destinations.html">Destinations</a>
+    <a href="bookings.html">Bookings</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="deals.html">Deals</a>
+    <a href="subscribers.html">Subscribers</a>
+  </nav>
+
+  <div class="admin-content">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-label">Destinations</div><div class="stat-value" id="statDest">—</div></div>
+      <div class="stat-card"><div class="stat-label">Bookings</div><div class="stat-value" id="statBook">—</div></div>
+      <div class="stat-card"><div class="stat-label">Reviews</div><div class="stat-value" id="statReview">—</div></div>
+      <div class="stat-card"><div class="stat-label">Deals</div><div class="stat-value" id="statDeal">—</div></div>
+      <div class="stat-card"><div class="stat-label">Subscribers</div><div class="stat-value" id="statSub">—</div></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header"><h2>Recent Bookings</h2></div>
+      <div class="admin-card-body admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Destination</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="recentBookings">
+            <tr><td colspan="4" style="text-align:center;color:#94a3b8;">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script>
+    initAdminLayout();
+
+    (async () => {
+      try {
+        const [destinations, bookings, reviews, deals, subscribers] = await Promise.all([
+          apiCall('/destinations'),
+          apiCall('/bookings'),
+          apiCall('/reviews'),
+          apiCall('/deals'),
+          apiCall('/subscribers')
+        ]);
+
+        document.getElementById('statDest').textContent = destinations.length;
+        document.getElementById('statBook').textContent = bookings.length;
+        document.getElementById('statReview').textContent = reviews.length;
+        document.getElementById('statDeal').textContent = deals.length;
+        document.getElementById('statSub').textContent = subscribers.length;
+
+        const tbody = document.getElementById('recentBookings');
+        if (bookings.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;">No bookings yet</td></tr>';
+        } else {
+          tbody.innerHTML = bookings.slice(0, 5).map(b => `
+            <tr>
+              <td><strong>${escapeHtml(b.reference)}</strong></td>
+              <td>${escapeHtml(b.destination)}</td>
+              <td><span class="badge badge-${b.status}">${b.status}</span></td>
+              <td>${formatDate(b.createdAt)}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Dashboard load error:', err);
+      }
+    })();
+  </script>
+</body>
+</html>

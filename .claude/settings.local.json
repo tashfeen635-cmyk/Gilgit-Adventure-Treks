@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:invideo.io)"
+      "WebFetch(domain:invideo.io)",
+      "Bash(cd:*)",
+      "Bash(node -e:*)",
+      "Bash(npm run seed:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)"
     ]
   }
 }

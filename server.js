@@ -26,6 +26,9 @@ app.use('/api/reviews', require('./backend/routes/reviews'));
 app.use('/api/deals', require('./backend/routes/deals'));
 app.use('/api/bookings', require('./backend/routes/bookings'));
 app.use('/api/subscribers', require('./backend/routes/subscribers'));
+app.use('/api/videos', require('./backend/routes/videos'));
+app.use('/api/gallery', require('./backend/routes/gallery'));
+app.use('/api/team', require('./backend/routes/team'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

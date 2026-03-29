@@ -22,6 +22,9 @@
     <a href="reviews.html">Reviews</a>
     <a href="deals.html">Deals</a>
     <a href="subscribers.html">Subscribers</a>
+    <a href="videos.html">Videos</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="team.html">Team</a>
   </nav>
 
   <div class="admin-content">
@@ -31,6 +34,9 @@
       <div class="stat-card"><div class="stat-label">Reviews</div><div class="stat-value" id="statReview">—</div></div>
       <div class="stat-card"><div class="stat-label">Deals</div><div class="stat-value" id="statDeal">—</div></div>
       <div class="stat-card"><div class="stat-label">Subscribers</div><div class="stat-value" id="statSub">—</div></div>
+      <div class="stat-card"><div class="stat-label">Videos</div><div class="stat-value" id="statVideo">—</div></div>
+      <div class="stat-card"><div class="stat-label">Gallery</div><div class="stat-value" id="statGallery">—</div></div>
+      <div class="stat-card"><div class="stat-label">Team</div><div class="stat-value" id="statTeam">—</div></div>
     </div>
 
     <div class="admin-card">
@@ -59,12 +65,15 @@
 
     (async () => {
       try {
-        const [destinations, bookings, reviews, deals, subscribers] = await Promise.all([
+        const [destinations, bookings, reviews, deals, subscribers, videos, gallery, team] = await Promise.all([
           apiCall('/destinations'),
           apiCall('/bookings'),
           apiCall('/reviews'),
           apiCall('/deals'),
-          apiCall('/subscribers')
+          apiCall('/subscribers'),
+          apiCall('/videos'),
+          apiCall('/gallery'),
+          apiCall('/team')
         ]);
 
         document.getElementById('statDest').textContent = destinations.length;
@@ -72,6 +81,9 @@
         document.getElementById('statReview').textContent = reviews.length;
         document.getElementById('statDeal').textContent = deals.length;
         document.getElementById('statSub').textContent = subscribers.length;
+        document.getElementById('statVideo').textContent = videos.length;
+        document.getElementById('statGallery').textContent = gallery.length;
+        document.getElementById('statTeam').textContent = team.length;
 
         const tbody = document.getElementById('recentBookings');
         if (bookings.length === 0) {

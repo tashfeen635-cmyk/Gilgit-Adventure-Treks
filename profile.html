@@ -465,7 +465,7 @@
             <label for="editPassword">New Password <span style="font-weight:400;color:var(--text-light);font-size:0.8rem">(leave blank to keep current)</span></label>
             <input type="password" id="editPassword" class="form-control" placeholder="Min 6 characters" minlength="6">
           </div>
-          <button type="submit" class="btn btn-primary" id="profileSaveBtn">Save Changes</button>
+          <button type="submit" class="btn btn-primary" id="profileSaveBtn">Save & Return</button>
         </form>
       </div>
     </div>
@@ -790,10 +790,11 @@
           errorEl.textContent = data.message || 'Update failed';
           errorEl.style.display = 'block';
         } else {
-          successEl.textContent = 'Profile updated!';
+          successEl.textContent = 'Profile updated! Redirecting...';
           successEl.style.display = 'block';
           document.getElementById('editPassword').value = '';
           loadProfile();
+          setTimeout(function() { window.location.href = 'index.html'; }, 1000);
         }
       } catch (err) {
         errorEl.textContent = 'Network error';

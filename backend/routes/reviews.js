@@ -15,6 +15,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/reviews/all (admin — all reviews including pending)
+router.get('/all', auth, async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // POST /api/reviews/user (user-submitted, pending approval)
 router.post('/user', userAuth, async (req, res) => {
   try {

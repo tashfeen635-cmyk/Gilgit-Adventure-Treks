@@ -42,6 +42,7 @@
               <th>Location</th>
               <th>Destination</th>
               <th>Rating</th>
+              <th>Status</th>
               <th>Verified</th>
               <th>Actions</th>
             </tr>
@@ -92,12 +93,22 @@
             <label for="rText">Review Text</label>
             <textarea id="rText" class="form-control" rows="3" required></textarea>
           </div>
-          <div class="form-group">
-            <label for="rVerified">Verified</label>
-            <select id="rVerified" class="form-control">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="rVerified">Verified</label>
+              <select id="rVerified" class="form-control">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="rStatus">Status</label>
+              <select id="rStatus" class="form-control">
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
           </div>
         </form>
       </div>

@@ -408,8 +408,45 @@
       </div>
       <div class="carousel-dots" id="reviewsDots" role="tablist" aria-label="Review navigation"></div>
 
+      <div style="text-align:center; margin-top:1.5rem;" class="reveal-up">
+        <button class="btn btn-primary" id="writeReviewBtn" style="padding:0.75rem 2rem; font-size:1rem;">Write a Review</button>
+      </div>
+
     </div>
   </section>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:2rem; width:420px; max-width:92vw; max-height:90vh; overflow-y:auto; position:relative;">
+      <button id="reviewModalClose" style="position:absolute; top:0.75rem; right:0.75rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b; line-height:1;">&times;</button>
+      <h3 style="color:#1B4332; margin-bottom:1rem; font-size:1.25rem;">Write a Review</h3>
+      <div id="rmError" style="display:none; background:#fef2f2; color:#ef4444; padding:0.6rem; border-radius:8px; margin-bottom:0.75rem; font-size:0.85rem;"></div>
+      <div id="rmSuccess" style="display:none; background:#f0fdf4; color:#16a34a; padding:0.6rem; border-radius:8px; margin-bottom:0.75rem; font-size:0.85rem;"></div>
+      <form id="rmForm">
+        <div style="margin-bottom:0.75rem;">
+          <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.25rem;">Destination</label>
+          <select id="rmDest" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem;" required>
+            <option value="">Select a destination...</option>
+          </select>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.25rem;">Rating</label>
+          <div id="rmStars" style="display:flex; gap:4px; cursor:pointer;">
+            <svg class="rm-star" data-v="1" viewBox="0 0 24 24" width="28" height="28" style="color:#e2e8f0; transition:color 0.15s;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+            <svg class="rm-star" data-v="2" viewBox="0 0 24 24" width="28" height="28" style="color:#e2e8f0; transition:color 0.15s;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+            <svg class="rm-star" data-v="3" viewBox="0 0 24 24" width="28" height="28" style="color:#e2e8f0; transition:color 0.15s;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+            <svg class="rm-star" data-v="4" viewBox="0 0 24 24" width="28" height="28" style="color:#e2e8f0; transition:color 0.15s;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+            <svg class="rm-star" data-v="5" viewBox="0 0 24 24" width="28" height="28" style="color:#e2e8f0; transition:color 0.15s;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.25rem;">Your Review</label>
+          <textarea id="rmText" rows="3" style="width:100%; padding:0.5rem 0.6rem; border:1px solid #e2e8f0; border-radius:8px; font-family:inherit; font-size:0.9rem; resize:vertical;" placeholder="Share your experience..." required></textarea>
+        </div>
+        <button type="submit" id="rmSubmit" style="width:100%; padding:0.65rem; background:#2D6A4F; color:#fff; border:none; border-radius:8px; font-family:inherit; font-size:0.95rem; font-weight:600; cursor:pointer;">Submit Review</button>
+      </form>
+    </div>
+  </div>
 
   <!-- ============ TRENDING / DEALS SECTION ============ -->
   <section class="deals section" id="deals">

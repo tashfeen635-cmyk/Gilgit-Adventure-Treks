@@ -1265,4 +1265,120 @@
 
   init();
 
+  /* --------------------------------------------------------
+     HOMEPAGE REVIEW MODAL
+  -------------------------------------------------------- */
+  var rmModal = document.getElementById('reviewModal');
+  var rmRating = 0;
+
+  // Open modal
+  var writeBtn = document.getElementById('writeReviewBtn');
+  if (writeBtn) {
+    writeBtn.addEventListener('click', function() {
+      if (!localStorage.getItem('user_token')) {
+        window.location.href = 'login.html';
+        return;
+      }
+      // Populate destinations
+      var sel = document.getElementById('rmDest');
+      if (sel.options.length <= 1) {
+        destinations.forEach(function(d) {
+          var opt = document.createElement('option');
+          opt.value = d.name;
+          opt.textContent = d.name;
+          sel.appendChild(opt);
+        });
+      }
+      rmRating = 0;
+      rmUpdateStars();
+      document.getElementById('rmForm').reset();
+      document.getElementById('rmError').style.display = 'none';
+      document.getElementById('rmSuccess').style.display = 'none';
+      rmModal.style.display = 'flex';
+    });
+  }
+
+  // Close modal
+  var rmClose = document.getElementById('reviewModalClose');
+  if (rmClose) {
+    rmClose.addEventListener('click', function() { rmModal.style.display = 'none'; });
+  }
+  if (rmModal) {
+    rmModal.addEventListener('click', function(e) {
+      if (e.target === rmModal) rmModal.style.display = 'none';
+    });
+  }
+
+  // Stars
+  function rmUpdateStars() {
+    document.querySelectorAll('.rm-star').forEach(function(s) {
+      s.style.color = parseInt(s.getAttribute('data-v')) <= rmRating ? '#D4A03C' : '#e2e8f0';
+    });
+  }
+  document.querySelectorAll('.rm-star').forEach(function(star) {
+    star.addEventListener('click', function() {
+      rmRating = parseInt(this.getAttribute('data-v'));
+      rmUpdateStars();
+    });
+    star.addEventListener('mouseenter', function() {
+      var v = parseInt(this.getAttribute('data-v'));
+      document.querySelectorAll('.rm-star').forEach(function(s) {
+        s.style.color = parseInt(s.getAttribute('data-v')) <= v ? '#D4A03C' : '#e2e8f0';
+      });
+    });
+  });
+  var rmStarsWrap = document.getElementById('rmStars');
+  if (rmStarsWrap) {
+    rmStarsWrap.addEventListener('mouseleave', rmUpdateStars);
+  }
+
+  // Submit
+  var rmForm = document.getElementById('rmForm');
+  if (rmForm) {
+    rmForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var errEl = document.getElementById('rmError');
+      var sucEl = document.getElementById('rmSuccess');
+      var btn = document.getElementById('rmSubmit');
+      errEl.style.display = 'none';
+      sucEl.style.display = 'none';
+
+      var dest = document.getElementById('rmDest').value;
+      var text = document.getElementById('rmText').value.trim();
+
+      if (!dest) { errEl.textContent = 'Please select a destination'; errEl.style.display = 'block'; return; }
+      if (!rmRating) { errEl.textContent = 'Please select a rating'; errEl.style.display = 'block'; return; }
+      if (!text) { errEl.textContent = 'Please write your review'; errEl.style.display = 'block'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      try {
+        var res = await fetch('/api/reviews/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('user_token')
+          },
+          body: JSON.stringify({ destination: dest, rating: rmRating, text: text })
+        });
+        var data = await res.json();
+        if (!res.ok) {
+          errEl.textContent = data.message || 'Failed to submit';
+          errEl.style.display = 'block';
+        } else {
+          sucEl.textContent = 'Review submitted! It will appear after admin approval.';
+          sucEl.style.display = 'block';
+          rmForm.reset();
+          rmRating = 0;
+          rmUpdateStars();
+        }
+      } catch (err) {
+        errEl.textContent = 'Network error';
+        errEl.style.display = 'block';
+      }
+      btn.disabled = false;
+      btn.textContent = 'Submit Review';
+    });
+  }
+
 })();

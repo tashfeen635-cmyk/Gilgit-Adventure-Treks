@@ -115,9 +115,13 @@
       gap: 1.5rem;
       margin-bottom: 1.5rem;
     }
+    .avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
     .profile-avatar {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
       background: var(--primary);
       color: #fff;
@@ -126,14 +130,126 @@
       justify-content: center;
       font-size: 2rem;
       font-weight: 700;
-      flex-shrink: 0;
       overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      border: 3px solid var(--border);
+      transition: border-color 0.2s;
     }
+    .profile-avatar:hover { border-color: var(--primary); }
     .profile-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+    .avatar-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 30px;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .profile-avatar:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay svg { fill: #fff; width: 16px; height: 16px; }
+
+    /* Avatar dropdown */
+    .avatar-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 50;
+      min-width: 160px;
+      overflow: hidden;
+    }
+    .avatar-menu.open { display: block; }
+    .avatar-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: var(--text);
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .avatar-menu-item:hover { background: var(--bg); }
+    .avatar-menu-item svg { width: 16px; height: 16px; fill: var(--text-light); flex-shrink: 0; }
+    .avatar-menu-item.danger { color: var(--danger); }
+    .avatar-menu-item.danger svg { fill: var(--danger); }
+
+    /* Crop modal */
+    .crop-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .crop-modal.open { display: flex; }
+    .crop-box {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 340px;
+      max-width: 95vw;
+      text-align: center;
+    }
+    .crop-box h3 { margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary-dark); }
+    .crop-canvas-wrap {
+      width: 250px;
+      height: 250px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--primary);
+      position: relative;
+      cursor: grab;
+      touch-action: none;
+    }
+    .crop-canvas-wrap:active { cursor: grabbing; }
+    .crop-canvas-wrap canvas {
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .crop-zoom {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+    .crop-zoom label { font-size: 0.8rem; color: var(--text-light); }
+    .crop-zoom input[type=range] { width: 160px; accent-color: var(--primary); }
+    .crop-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+    .crop-actions .btn { padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+    .btn-outline {
+      background: none;
+      color: var(--text-light);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--bg); }
+
     .profile-info h3 { font-size: 1.25rem; }
     .profile-info p { color: var(--text-light); font-size: 0.9rem; }
 
@@ -282,11 +398,46 @@
     <div class="tab-content active" id="tab-profile">
       <div class="card">
         <div class="profile-header">
-          <div class="profile-avatar" id="profileAvatar"></div>
+          <div class="avatar-wrapper">
+            <div class="profile-avatar" id="profileAvatar">
+              <div class="avatar-overlay">
+                <svg viewBox="0 0 24 24"><path d="M12 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6-1.8V8l-2.15-2.4A1 1 0 0015.1 5H8.9a1 1 0 00-.75.35L6 8v2.2A3 3 0 004 13v3a1 1 0 001 1h14a1 1 0 001-1v-3a3 3 0 00-2-2.8zM12 17c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>
+              </div>
+            </div>
+            <div class="avatar-menu" id="avatarMenu">
+              <button class="avatar-menu-item" id="avatarChangeBtn">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-5z"/></svg>
+                Change Picture
+              </button>
+              <button class="avatar-menu-item danger" id="avatarRemoveBtn">
+                <svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                Remove Picture
+              </button>
+            </div>
+            <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+          </div>
           <div class="profile-info">
             <h3 id="profileName"></h3>
             <p id="profileEmail"></p>
             <p id="profileLocation"></p>
+          </div>
+        </div>
+
+        <!-- Crop Modal -->
+        <div class="crop-modal" id="cropModal">
+          <div class="crop-box">
+            <h3>Adjust Photo</h3>
+            <div class="crop-canvas-wrap" id="cropWrap">
+              <canvas id="cropCanvas"></canvas>
+            </div>
+            <div class="crop-zoom">
+              <label>Zoom</label>
+              <input type="range" id="cropZoom" min="1" max="3" step="0.05" value="1">
+            </div>
+            <div class="crop-actions">
+              <button class="btn btn-outline" id="cropCancel">Cancel</button>
+              <button class="btn btn-primary" id="cropApply">Apply</button>
+            </div>
           </div>
         </div>
 
@@ -305,18 +456,11 @@
               <input type="tel" id="editPhone" class="form-control">
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="editLocation">Location</label>
-              <input type="text" id="editLocation" class="form-control" placeholder="e.g. Gilgit, Pakistan">
-            </div>
-            <div class="form-group">
-              <label for="editAvatarFile">Profile Picture</label>
-              <input type="file" id="editAvatarFile" class="form-control" accept="image/*" style="padding:0.4rem 0.5rem;">
-              <img id="avatarPreview" src="" alt="" style="display:none;width:50px;height:50px;border-radius:50%;object-fit:cover;margin-top:0.5rem;">
-              <input type="hidden" id="editAvatar">
-            </div>
+          <div class="form-group">
+            <label for="editLocation">Location</label>
+            <input type="text" id="editLocation" class="form-control" placeholder="e.g. Gilgit, Pakistan">
           </div>
+          <input type="hidden" id="editAvatar">
           <div class="form-group">
             <label for="editPassword">New Password <span style="font-weight:400;color:var(--text-light);font-size:0.8rem">(leave blank to keep current)</span></label>
             <input type="password" id="editPassword" class="form-control" placeholder="Min 6 characters" minlength="6">
@@ -431,37 +575,145 @@
       highlightStars(selectedRating);
     }
 
-    // --- Resize image to max 200x200 and return base64 ---
-    function resizeImage(file, maxSize) {
-      return new Promise(function(resolve) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var img = new Image();
-          img.onload = function() {
-            var canvas = document.createElement('canvas');
-            var w = img.width, h = img.height;
-            if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
-            else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
-            canvas.width = w;
-            canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.8));
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
+    // ===== AVATAR CLICK MENU =====
+    var avatarMenu = document.getElementById('avatarMenu');
+    var profileAvatarEl = document.getElementById('profileAvatar');
+
+    profileAvatarEl.addEventListener('click', function(e) {
+      e.stopPropagation();
+      avatarMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', function() { avatarMenu.classList.remove('open'); });
+
+    // Change picture
+    document.getElementById('avatarChangeBtn').addEventListener('click', function() {
+      avatarMenu.classList.remove('open');
+      document.getElementById('avatarFileInput').click();
+    });
+
+    // Remove picture
+    document.getElementById('avatarRemoveBtn').addEventListener('click', async function() {
+      avatarMenu.classList.remove('open');
+      try {
+        await fetch('/api/users/me', {
+          method: 'PUT',
+          headers: API_HEADERS,
+          body: JSON.stringify({ avatar: '' })
+        });
+        document.getElementById('editAvatar').value = '';
+        localStorage.setItem('user_avatar', '');
+        loadProfile();
+      } catch (err) {}
+    });
+
+    // ===== IMAGE CROPPER =====
+    var cropModal = document.getElementById('cropModal');
+    var cropCanvas = document.getElementById('cropCanvas');
+    var cropCtx = cropCanvas.getContext('2d');
+    var cropZoom = document.getElementById('cropZoom');
+    var cropImg = new Image();
+    var cropSize = 250;
+    cropCanvas.width = cropSize;
+    cropCanvas.height = cropSize;
+
+    var panX = 0, panY = 0, dragging = false, dragStartX = 0, dragStartY = 0, startPanX = 0, startPanY = 0;
+
+    function drawCrop() {
+      var z = parseFloat(cropZoom.value);
+      var w = cropImg.width, h = cropImg.height;
+      // Scale image so shortest side fills cropSize, then apply zoom
+      var scale;
+      if (w > h) { scale = (cropSize / h) * z; }
+      else { scale = (cropSize / w) * z; }
+      var dw = w * scale, dh = h * scale;
+      // Clamp pan
+      var maxPanX = Math.max(0, (dw - cropSize) / 2);
+      var maxPanY = Math.max(0, (dh - cropSize) / 2);
+      panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+      panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+      var dx = (cropSize - dw) / 2 + panX;
+      var dy = (cropSize - dh) / 2 + panY;
+      cropCtx.clearRect(0, 0, cropSize, cropSize);
+      cropCtx.drawImage(cropImg, dx, dy, dw, dh);
     }
 
-    // --- File picker preview ---
-    document.getElementById('editAvatarFile').addEventListener('change', async function() {
+    cropZoom.addEventListener('input', drawCrop);
+
+    // Drag to pan (mouse)
+    var cropWrap = document.getElementById('cropWrap');
+    cropWrap.addEventListener('mousedown', function(e) {
+      dragging = true; dragStartX = e.clientX; dragStartY = e.clientY;
+      startPanX = panX; startPanY = panY;
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      panX = startPanX + (e.clientX - dragStartX);
+      panY = startPanY + (e.clientY - dragStartY);
+      drawCrop();
+    });
+    document.addEventListener('mouseup', function() { dragging = false; });
+
+    // Drag to pan (touch)
+    cropWrap.addEventListener('touchstart', function(e) {
+      var t = e.touches[0];
+      dragging = true; dragStartX = t.clientX; dragStartY = t.clientY;
+      startPanX = panX; startPanY = panY;
+    });
+    document.addEventListener('touchmove', function(e) {
+      if (!dragging) return;
+      var t = e.touches[0];
+      panX = startPanX + (t.clientX - dragStartX);
+      panY = startPanY + (t.clientY - dragStartY);
+      drawCrop();
+    });
+    document.addEventListener('touchend', function() { dragging = false; });
+
+    // File input -> open cropper
+    document.getElementById('avatarFileInput').addEventListener('change', function() {
       var file = this.files[0];
       if (!file) return;
-      var base64 = await resizeImage(file, 200);
-      document.getElementById('editAvatar').value = base64;
-      var preview = document.getElementById('avatarPreview');
-      preview.src = base64;
-      preview.style.display = 'block';
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        cropImg.onload = function() {
+          panX = 0; panY = 0;
+          cropZoom.value = 1;
+          drawCrop();
+          cropModal.classList.add('open');
+        };
+        cropImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      this.value = '';
+    });
+
+    // Cancel crop
+    document.getElementById('cropCancel').addEventListener('click', function() {
+      cropModal.classList.remove('open');
+    });
+    cropModal.addEventListener('click', function(e) {
+      if (e.target === cropModal) cropModal.classList.remove('open');
+    });
+
+    // Apply crop -> save to server
+    document.getElementById('cropApply').addEventListener('click', async function() {
+      // Export canvas to 200x200 jpeg
+      var outCanvas = document.createElement('canvas');
+      outCanvas.width = 200; outCanvas.height = 200;
+      outCanvas.getContext('2d').drawImage(cropCanvas, 0, 0, cropSize, cropSize, 0, 0, 200, 200);
+      var base64 = outCanvas.toDataURL('image/jpeg', 0.85);
+      cropModal.classList.remove('open');
+
+      // Save to server
+      try {
+        await fetch('/api/users/me', {
+          method: 'PUT',
+          headers: API_HEADERS,
+          body: JSON.stringify({ avatar: base64 })
+        });
+        document.getElementById('editAvatar').value = base64;
+        localStorage.setItem('user_avatar', base64);
+        loadProfile();
+      } catch (err) {}
     });
 
     // --- Load profile ---
@@ -477,17 +729,13 @@
         document.getElementById('profileLocation').textContent = user.location || '';
 
         // Avatar
-        const avatarEl = document.getElementById('profileAvatar');
+        var avatarInner = document.getElementById('profileAvatar');
+        var overlay = '<div class="avatar-overlay"><svg viewBox="0 0 24 24"><path d="M12 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6-1.8V8l-2.15-2.4A1 1 0 0015.1 5H8.9a1 1 0 00-.75.35L6 8v2.2A3 3 0 004 13v3a1 1 0 001 1h14a1 1 0 001-1v-3a3 3 0 00-2-2.8zM12 17c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg></div>';
         if (user.avatar) {
-          avatarEl.innerHTML = '<img src="' + user.avatar + '" alt="Avatar">';
+          avatarInner.innerHTML = '<img src="' + user.avatar + '" alt="Avatar">' + overlay;
         } else {
-          avatarEl.textContent = user.name.charAt(0).toUpperCase();
+          avatarInner.innerHTML = '<span style="pointer-events:none;">' + user.name.charAt(0).toUpperCase() + '</span>' + overlay;
         }
-
-        // Show current avatar in preview
-        var preview = document.getElementById('avatarPreview');
-        if (user.avatar) { preview.src = user.avatar; preview.style.display = 'block'; }
-        else { preview.style.display = 'none'; }
 
         // Fill edit form
         document.getElementById('editName').value = user.name;

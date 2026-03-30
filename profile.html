@@ -311,8 +311,10 @@
               <input type="text" id="editLocation" class="form-control" placeholder="e.g. Gilgit, Pakistan">
             </div>
             <div class="form-group">
-              <label for="editAvatar">Avatar URL</label>
-              <input type="url" id="editAvatar" class="form-control" placeholder="https://...">
+              <label for="editAvatarFile">Profile Picture</label>
+              <input type="file" id="editAvatarFile" class="form-control" accept="image/*" style="padding:0.4rem 0.5rem;">
+              <img id="avatarPreview" src="" alt="" style="display:none;width:50px;height:50px;border-radius:50%;object-fit:cover;margin-top:0.5rem;">
+              <input type="hidden" id="editAvatar">
             </div>
           </div>
           <div class="form-group">
@@ -429,6 +431,39 @@
       highlightStars(selectedRating);
     }
 
+    // --- Resize image to max 200x200 and return base64 ---
+    function resizeImage(file, maxSize) {
+      return new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var w = img.width, h = img.height;
+            if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+            else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // --- File picker preview ---
+    document.getElementById('editAvatarFile').addEventListener('change', async function() {
+      var file = this.files[0];
+      if (!file) return;
+      var base64 = await resizeImage(file, 200);
+      document.getElementById('editAvatar').value = base64;
+      var preview = document.getElementById('avatarPreview');
+      preview.src = base64;
+      preview.style.display = 'block';
+    });
+
     // --- Load profile ---
     async function loadProfile() {
       try {
@@ -441,14 +476,18 @@
         document.getElementById('profileEmail').textContent = user.email;
         document.getElementById('profileLocation').textContent = user.location || '';
 
-        // Avatar — shows Google/Gmail profile picture via unavatar
+        // Avatar
         const avatarEl = document.getElementById('profileAvatar');
         if (user.avatar) {
-          const initial = user.name.charAt(0).toUpperCase();
-          avatarEl.innerHTML = '<img src="' + user.avatar + '" alt="Avatar" onerror="this.style.display=\'none\';this.parentElement.textContent=\'' + initial + '\'">';
+          avatarEl.innerHTML = '<img src="' + user.avatar + '" alt="Avatar">';
         } else {
           avatarEl.textContent = user.name.charAt(0).toUpperCase();
         }
+
+        // Show current avatar in preview
+        var preview = document.getElementById('avatarPreview');
+        if (user.avatar) { preview.src = user.avatar; preview.style.display = 'block'; }
+        else { preview.style.display = 'none'; }
 
         // Fill edit form
         document.getElementById('editName').value = user.name;

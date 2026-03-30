@@ -173,6 +173,11 @@
           <input type="tel" id="phone" class="form-control" placeholder="e.g. +92 300 1234567">
         </div>
         <div class="form-group">
+          <label for="avatarFile">Profile Picture <span class="optional">(optional)</span></label>
+          <input type="file" id="avatarFile" class="form-control" accept="image/*" style="padding:0.4rem 0.5rem;">
+          <img id="avatarPreview" src="" alt="" style="display:none;width:50px;height:50px;border-radius:50%;object-fit:cover;margin-top:0.5rem;">
+        </div>
+        <div class="form-group">
           <label for="password">Password</label>
           <input type="password" id="password" class="form-control" placeholder="Min 6 characters" required minlength="6">
         </div>
@@ -195,6 +200,38 @@
     if (localStorage.getItem('user_token')) {
       window.location.href = 'profile.html';
     }
+
+    // Resize image to max 200x200 and return base64
+    var avatarBase64 = '';
+    function resizeImage(file, maxSize) {
+      return new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var w = img.width, h = img.height;
+            if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+            else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('avatarFile').addEventListener('change', async function() {
+      var file = this.files[0];
+      if (!file) return;
+      avatarBase64 = await resizeImage(file, 200);
+      var preview = document.getElementById('avatarPreview');
+      preview.src = avatarBase64;
+      preview.style.display = 'block';
+    });
 
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -228,7 +265,7 @@
         const res = await fetch('/api/users/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password, phone })
+          body: JSON.stringify({ name, email, password, phone, avatar: avatarBase64 })
         });
 
         const data = await res.json();

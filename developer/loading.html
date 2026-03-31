@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading Screen — Developer Panel</title>
+  <link rel="stylesheet" href="css/developer.css">
+</head>
+<body>
+  <div class="dev-topbar">
+    <h1>Developer Panel</h1>
+    <div class="topbar-right">
+      <span class="dev-user" id="devUser"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <nav class="dev-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="branding.html">Branding</a>
+    <a href="hero.html">Hero</a>
+    <a href="sections.html">Sections</a>
+    <a href="navigation.html">Navigation</a>
+    <a href="footer.html">Footer</a>
+    <a href="newsletter.html">Newsletter</a>
+    <a href="booking.html">Booking</a>
+    <a href="contact.html">Contact</a>
+    <a href="ai-planner.html">AI Planner</a>
+    <a href="admins.html">Admins</a>
+    <a href="loading.html">Loading</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+
+  <div class="dev-content">
+    <div class="dev-card">
+      <div class="dev-card-header"><h2>Loading Screen Text</h2></div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msg"></div>
+        <form id="loadingForm">
+          <div class="form-group">
+            <label for="loadingTitle">Loading Title</label>
+            <input type="text" id="loadingTitle" class="form-control">
+            <p class="form-hint">Shown below the logo while the site loads</p>
+          </div>
+          <div class="form-group">
+            <label for="loadingText">Loading Text</label>
+            <input type="text" id="loadingText" class="form-control">
+            <p class="form-hint">Subtitle below the spinner</p>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Loading Screen</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/developer.js"></script>
+  <script>
+    initDevLayout();
+
+    (async () => {
+      var s = await loadSettings();
+      var l = s.loadingScreen || {};
+      document.getElementById('loadingTitle').value = l.title || '';
+      document.getElementById('loadingText').value = l.text || '';
+    })();
+
+    document.getElementById('loadingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var msgEl = document.getElementById('msg');
+      try {
+        await saveSettings({
+          loadingScreen: {
+            title: document.getElementById('loadingTitle').value.trim(),
+            text: document.getElementById('loadingText').value.trim()
+          }
+        });
+        showMsg(msgEl, 'Loading screen saved!', false);
+      } catch (err) {
+        showMsg(msgEl, err.message, true);
+      }
+    });
+  </script>
+</body>
+</html>

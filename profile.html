@@ -931,6 +931,19 @@
     loadBookings();
     loadReviews();
     loadDestinations();
+
+    // Dynamic branding from site settings
+    fetch('/api/public-data').then(function(r){ return r.json(); }).then(function(d) {
+      if (d.settings && d.settings.branding) {
+        var b = d.settings.branding;
+        if (b.companyName) {
+          var topH1 = document.querySelector('.topbar h1 a');
+          if (topH1) topH1.textContent = b.companyName;
+          document.title = 'My Profile — ' + b.companyName;
+        }
+        if (b.faviconUrl) document.querySelector('link[rel="icon"]').href = b.faviconUrl;
+      }
+    }).catch(function(){});
   </script>
 </body>
 </html>

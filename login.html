@@ -209,6 +209,19 @@
         submitBtn.textContent = 'Sign In';
       }
     });
+
+    // Dynamic branding from site settings
+    fetch('/api/public-data').then(r => r.json()).then(d => {
+      if (d.settings && d.settings.branding) {
+        var b = d.settings.branding;
+        if (b.logoUrl) document.querySelector('.logo-area img').src = b.logoUrl;
+        if (b.companyName) {
+          document.querySelector('.login-card h1').textContent = b.companyName;
+          document.title = 'Login — ' + b.companyName;
+        }
+        if (b.faviconUrl) document.querySelector('link[rel="icon"]').href = b.faviconUrl;
+      }
+    }).catch(function(){});
   </script>
 </body>
 </html>

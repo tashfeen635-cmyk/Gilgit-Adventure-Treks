@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation — Developer Panel</title>
+  <link rel="stylesheet" href="css/developer.css">
+</head>
+<body>
+  <div class="dev-topbar">
+    <h1>Developer Panel</h1>
+    <div class="topbar-right">
+      <span class="dev-user" id="devUser"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <nav class="dev-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="branding.html">Branding</a>
+    <a href="hero.html">Hero</a>
+    <a href="sections.html">Sections</a>
+    <a href="navigation.html">Navigation</a>
+    <a href="footer.html">Footer</a>
+    <a href="newsletter.html">Newsletter</a>
+    <a href="booking.html">Booking</a>
+    <a href="contact.html">Contact</a>
+    <a href="ai-planner.html">AI Planner</a>
+    <a href="admins.html">Admins</a>
+    <a href="loading.html">Loading</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+
+  <div class="dev-content">
+    <div class="dev-card">
+      <div class="dev-card-header">
+        <h2>Navigation Links</h2>
+        <button class="btn btn-primary btn-sm" id="addLink">+ Add Link</button>
+      </div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msgNav"></div>
+        <div id="linksContainer"></div>
+        <button type="button" class="btn btn-primary" id="saveLinks" style="margin-top:0.75rem;">Save Navigation</button>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-card-header">
+        <h2>Filter Categories</h2>
+        <button class="btn btn-primary btn-sm" id="addFilter">+ Add Category</button>
+      </div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msgFilter"></div>
+        <p class="form-hint" style="margin-bottom:0.75rem;">These are the destination filter tabs (e.g. Valleys, Treks, Lakes)</p>
+        <div id="filtersContainer"></div>
+        <button type="button" class="btn btn-primary" id="saveFilters" style="margin-top:0.75rem;">Save Filter Categories</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/developer.js"></script>
+  <script>
+    initDevLayout();
+
+    var navLinks = [];
+    var filterCats = [];
+
+    function renderLinks() {
+      var c = document.getElementById('linksContainer');
+      c.innerHTML = '';
+      navLinks.forEach(function(link, i) {
+        var div = document.createElement('div');
+        div.className = 'repeater-item';
+        div.innerHTML =
+          '<button type="button" class="remove-btn" data-i="' + i + '">&times;</button>' +
+          '<div class="form-row">' +
+            '<div class="form-group"><label>Label</label><input type="text" class="form-control link-label" value="' + escapeHtml(link.label || '') + '"></div>' +
+            '<div class="form-group"><label>Href</label><input type="text" class="form-control link-href" value="' + escapeHtml(link.href || '') + '"></div>' +
+          '</div>' +
+          '<div class="form-group"><label><input type="checkbox" class="link-cta" ' + (link.isCta ? 'checked' : '') + '> CTA Style (highlighted)</label></div>';
+        c.appendChild(div);
+      });
+      c.querySelectorAll('.remove-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          navLinks.splice(parseInt(this.dataset.i), 1);
+          renderLinks();
+        });
+      });
+    }
+
+    function renderFilters() {
+      var c = document.getElementById('filtersContainer');
+      c.innerHTML = '';
+      filterCats.forEach(function(cat, i) {
+        var div = document.createElement('div');
+        div.className = 'repeater-item';
+        div.innerHTML =
+          '<button type="button" class="remove-btn" data-i="' + i + '">&times;</button>' +
+          '<div class="form-row">' +
+            '<div class="form-group"><label>Display Label</label><input type="text" class="form-control cat-label" value="' + escapeHtml(cat.label || '') + '"></div>' +
+            '<div class="form-group"><label>Value (filter key)</label><input type="text" class="form-control cat-value" value="' + escapeHtml(cat.value || '') + '"></div>' +
+          '</div>';
+        c.appendChild(div);
+      });
+      c.querySelectorAll('.remove-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          filterCats.splice(parseInt(this.dataset.i), 1);
+          renderFilters();
+        });
+      });
+    }
+
+    (async () => {
+      var s = await loadSettings();
+      navLinks = (s.navigation && s.navigation.links) || [];
+      filterCats = s.filterCategories || [];
+      renderLinks();
+      renderFilters();
+    })();
+
+    document.getElementById('addLink').addEventListener('click', function() {
+      navLinks.push({ label: '', href: '', isCta: false });
+      renderLinks();
+    });
+
+    document.getElementById('addFilter').addEventListener('click', function() {
+      filterCats.push({ label: '', value: '' });
+      renderFilters();
+    });
+
+    document.getElementById('saveLinks').addEventListener('click', async function() {
+      var msgEl = document.getElementById('msgNav');
+      var labels = document.querySelectorAll('.link-label');
+      var hrefs = document.querySelectorAll('.link-href');
+      var ctas = document.querySelectorAll('.link-cta');
+      var data = [];
+      labels.forEach(function(el, i) {
+        data.push({ label: el.value.trim(), href: hrefs[i].value.trim(), isCta: ctas[i].checked });
+      });
+      try {
+        await saveSettings({ navigation: { links: data } });
+        navLinks = data;
+        showMsg(msgEl, 'Navigation saved!', false);
+      } catch (err) {
+        showMsg(msgEl, err.message, true);
+      }
+    });
+
+    document.getElementById('saveFilters').addEventListener('click', async function() {
+      var msgEl = document.getElementById('msgFilter');
+      var labels = document.querySelectorAll('.cat-label');
+      var values = document.querySelectorAll('.cat-value');
+      var data = [];
+      labels.forEach(function(el, i) {
+        data.push({ label: el.value.trim(), value: values[i].value.trim() });
+      });
+      try {
+        await saveSettings({ filterCategories: data });
+        filterCats = data;
+        showMsg(msgEl, 'Filter categories saved!', false);
+      } catch (err) {
+        showMsg(msgEl, err.message, true);
+      }
+    });
+  </script>
+</body>
+</html>

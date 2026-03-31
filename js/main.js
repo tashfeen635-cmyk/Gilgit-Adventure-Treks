@@ -14,9 +14,10 @@
   let videos = [];
   let galleryImages = [];
   let teamMembers = [];
+  let bookingConfig = { serviceFee: 2000, porterFeePerNight: 3000, childDiscount: 0.5 };
 
-  /* AI chat/planner responses stay hardcoded (UI logic, not admin content) */
-  const aiResponses = {
+  /* AI chat/planner responses — defaults overridden by site settings */
+  let aiResponses = {
     valleys: [
       'Based on your preferences, I recommend a **Hunza Valley & Passu** combo trip! You\'ll see Rakaposhi, Attabad Lake, and the famous Hussaini Bridge.',
       'For a valley experience, **Phander Valley** offers peaceful lakes and untouched natural beauty — perfect for a serene getaway.',
@@ -46,7 +47,7 @@
     ]
   };
 
-  const chatResponses = {
+  let chatResponses = {
     'hello': 'Assalam o Alaikum! Ready to explore Northern Pakistan? Tell me what interests you or click Generate My Trek!',
     'hi': 'Walaikum Assalam! What kind of Northern Pakistan adventure are you looking for?',
     'salam': 'Walaikum Assalam! Welcome to The Journey Team. How can I help plan your trip?',
@@ -632,10 +633,10 @@
       ? Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24))
       : 5;
 
-    const basePrice = dest.price * booking.adults + dest.price * 0.5 * booking.children;
+    const basePrice = dest.price * booking.adults + dest.price * bookingConfig.childDiscount * booking.children;
     const nightsTotal = basePrice * (nights / 5);
-    const porterFee = booking.infants * 3000 * nights;
-    const serviceFee = 2000;
+    const porterFee = booking.infants * bookingConfig.porterFeePerNight * nights;
+    const serviceFee = bookingConfig.serviceFee;
     const total = nightsTotal + porterFee + serviceFee;
 
     // Store total for submission
@@ -1230,6 +1231,122 @@
     }
   }
 
+  /* --------------------------------------------------------
+     APPLY SITE SETTINGS — Dynamic content from developer panel
+  -------------------------------------------------------- */
+  function applySiteSettings(s) {
+    if (!s) return;
+
+    // Branding
+    if (s.branding) {
+      const b = s.branding;
+      if (b.logoUrl) {
+        $$('.logo-img').forEach(img => { img.src = b.logoUrl; img.alt = b.companyName || ''; });
+      }
+      if (b.companyName) {
+        const logoSpan = $('.nav-logo span');
+        if (logoSpan) logoSpan.textContent = b.companyName;
+        document.title = b.companyName;
+      }
+      if (b.faviconUrl) {
+        const favicon = $('link[rel="icon"]');
+        if (favicon) favicon.href = b.faviconUrl;
+      }
+      if (b.companyShortName) {
+        const footerLogoSpan = $('.footer-brand .nav-logo span');
+        if (footerLogoSpan) footerLogoSpan.textContent = b.companyShortName;
+      }
+    }
+
+    // Hero text
+    if (s.hero) {
+      const h = s.hero;
+      const heroSubtitle = $('.hero-subtitle');
+      const heroTitle = $('.hero-title');
+      const heroDesc = $('.hero-description');
+      if (heroSubtitle && h.subtitle) heroSubtitle.textContent = h.subtitle;
+      if (heroTitle && h.title) heroTitle.innerHTML = h.title;
+      if (heroDesc && h.description) heroDesc.textContent = h.description;
+    }
+
+    // Section headers
+    if (s.sectionHeaders) {
+      const sectionMap = {
+        gallery: '#gallery',
+        videos: '#videos',
+        team: '#team',
+        topDestinations: '#top-destinations',
+        destinations: '#destinations',
+        map: '#map',
+        tripPlanner: '#trip-planner',
+        booking: '#booking',
+        reviews: '#reviews',
+        deals: '#deals'
+      };
+      for (const [key, selector] of Object.entries(sectionMap)) {
+        const section = s.sectionHeaders[key];
+        if (!section) continue;
+        const el = $(selector);
+        if (!el) continue;
+        const tag = $('.section-tag', el);
+        const title = $('.section-title', el);
+        const desc = $('.section-description', el);
+        if (tag && section.tag) tag.textContent = section.tag;
+        if (title && section.title) title.textContent = section.title;
+        if (desc && section.description) desc.textContent = section.description;
+      }
+    }
+
+    // Footer
+    if (s.footer) {
+      const f = s.footer;
+      const footerDesc = $('.footer-brand > p');
+      if (footerDesc && f.description) footerDesc.textContent = f.description;
+      const copyright = $('.footer-bottom p');
+      if (copyright && f.copyrightText) copyright.innerHTML = f.copyrightText;
+    }
+
+    // Newsletter
+    if (s.newsletter) {
+      const n = s.newsletter;
+      const nlHeading = $('.newsletter-content h2');
+      const nlDesc = $('.newsletter-content > p');
+      const nlNote = $('.newsletter-note');
+      if (nlHeading && n.heading) nlHeading.textContent = n.heading;
+      if (nlDesc && n.description) nlDesc.textContent = n.description;
+      if (nlNote && n.subscriberNote) nlNote.textContent = n.subscriberNote;
+    }
+
+    // Loading screen
+    if (s.loadingScreen) {
+      const lt = $('.loading-title');
+      const ltxt = $('.loading-text');
+      if (lt && s.loadingScreen.title) lt.textContent = s.loadingScreen.title;
+      if (ltxt && s.loadingScreen.text) ltxt.textContent = s.loadingScreen.text;
+    }
+
+    // Booking config
+    if (s.bookingConfig) {
+      if (s.bookingConfig.serviceFee !== undefined) bookingConfig.serviceFee = s.bookingConfig.serviceFee;
+      if (s.bookingConfig.porterFeePerNight !== undefined) bookingConfig.porterFeePerNight = s.bookingConfig.porterFeePerNight;
+      if (s.bookingConfig.childDiscount !== undefined) bookingConfig.childDiscount = s.bookingConfig.childDiscount;
+    }
+
+    // AI planner responses (override defaults if present)
+    if (s.aiTripPlanner) {
+      if (s.aiTripPlanner.aiResponses && Object.keys(s.aiTripPlanner.aiResponses).length > 0) {
+        aiResponses = s.aiTripPlanner.aiResponses;
+      }
+      if (s.aiTripPlanner.chatResponses && Object.keys(s.aiTripPlanner.chatResponses).length > 0) {
+        chatResponses = s.aiTripPlanner.chatResponses;
+      }
+      if (s.aiTripPlanner.welcomeMessage) {
+        const firstAiMsg = $('.chat-message.ai .chat-bubble');
+        if (firstAiMsg) firstAiMsg.innerHTML = '<p>' + s.aiTripPlanner.welcomeMessage + '</p>';
+      }
+    }
+  }
+
   async function init() {
     try {
       const data = await fetch('/api/public-data').then(r => r.json());
@@ -1239,6 +1356,11 @@
       videos = data.videos || [];
       galleryImages = data.gallery || [];
       teamMembers = data.team || [];
+
+      // Apply site settings before rendering
+      if (data.settings) {
+        applySiteSettings(data.settings);
+      }
     } catch (err) {
       console.warn('API not available, site will show empty sections:', err.message);
     }

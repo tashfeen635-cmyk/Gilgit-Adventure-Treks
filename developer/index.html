@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Developer Panel</title>
+  <link rel="stylesheet" href="css/developer.css">
+</head>
+<body>
+  <div class="dev-topbar">
+    <h1>Developer Panel</h1>
+    <div class="topbar-right">
+      <span class="dev-user" id="devUser"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <nav class="dev-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="branding.html">Branding</a>
+    <a href="hero.html">Hero</a>
+    <a href="sections.html">Sections</a>
+    <a href="navigation.html">Navigation</a>
+    <a href="footer.html">Footer</a>
+    <a href="newsletter.html">Newsletter</a>
+    <a href="booking.html">Booking</a>
+    <a href="contact.html">Contact</a>
+    <a href="ai-planner.html">AI Planner</a>
+    <a href="admins.html">Admins</a>
+    <a href="loading.html">Loading</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+
+  <div class="dev-content">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-label">Sections Configured</div><div class="stat-value" id="statSections">—</div></div>
+      <div class="stat-card"><div class="stat-label">Admin Accounts</div><div class="stat-value" id="statAdmins">—</div></div>
+      <div class="stat-card"><div class="stat-label">Hero Slides</div><div class="stat-value" id="statSlides">—</div></div>
+      <div class="stat-card"><div class="stat-label">Nav Links</div><div class="stat-value" id="statNavLinks">—</div></div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-card-header"><h2>Quick Links</h2></div>
+      <div class="dev-card-body">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0.75rem;">
+          <a href="branding.html" class="btn btn-outline" style="justify-content:center;">Branding & Logo</a>
+          <a href="hero.html" class="btn btn-outline" style="justify-content:center;">Hero Section</a>
+          <a href="sections.html" class="btn btn-outline" style="justify-content:center;">Section Headers</a>
+          <a href="footer.html" class="btn btn-outline" style="justify-content:center;">Footer Content</a>
+          <a href="admins.html" class="btn btn-outline" style="justify-content:center;">Manage Admins</a>
+          <a href="ai-planner.html" class="btn btn-outline" style="justify-content:center;">AI Planner Config</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-card-header"><h2>Current Branding</h2></div>
+      <div class="dev-card-body" id="brandingPreview">
+        <p style="color:#94a3b8; text-align:center;">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/developer.js"></script>
+  <script>
+    initDevLayout();
+
+    (async () => {
+      try {
+        var settings = await loadSettings();
+        var admins = await apiCall('/dev/admins');
+
+        document.getElementById('statSections').textContent = '10';
+        document.getElementById('statAdmins').textContent = admins.length;
+        document.getElementById('statSlides').textContent = (settings.hero && settings.hero.slides) ? settings.hero.slides.length : 0;
+        document.getElementById('statNavLinks').textContent = (settings.navigation && settings.navigation.links) ? settings.navigation.links.length : 0;
+
+        var b = settings.branding || {};
+        document.getElementById('brandingPreview').innerHTML =
+          '<div style="display:flex;align-items:center;gap:1rem;">' +
+            (b.logoUrl ? '<img src="/' + escapeHtml(b.logoUrl) + '" style="width:48px;height:48px;object-fit:contain;border-radius:8px;" alt="Logo">' : '') +
+            '<div>' +
+              '<div style="font-weight:600;font-size:1.1rem;">' + escapeHtml(b.companyName || 'Not set') + '</div>' +
+              '<div style="color:#64748b;font-size:0.85rem;">' + escapeHtml(b.companyShortName || '') + '</div>' +
+            '</div>' +
+          '</div>';
+      } catch (err) {
+        console.error('Dashboard load error:', err);
+      }
+    })();
+  </script>
+</body>
+</html>

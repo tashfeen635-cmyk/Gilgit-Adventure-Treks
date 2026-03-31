@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Planner — Developer Panel</title>
+  <link rel="stylesheet" href="css/developer.css">
+</head>
+<body>
+  <div class="dev-topbar">
+    <h1>Developer Panel</h1>
+    <div class="topbar-right">
+      <span class="dev-user" id="devUser"></span>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <nav class="dev-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="branding.html">Branding</a>
+    <a href="hero.html">Hero</a>
+    <a href="sections.html">Sections</a>
+    <a href="navigation.html">Navigation</a>
+    <a href="footer.html">Footer</a>
+    <a href="newsletter.html">Newsletter</a>
+    <a href="booking.html">Booking</a>
+    <a href="contact.html">Contact</a>
+    <a href="ai-planner.html">AI Planner</a>
+    <a href="admins.html">Admins</a>
+    <a href="loading.html">Loading</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+
+  <div class="dev-content">
+    <div class="dev-card">
+      <div class="dev-card-header"><h2>Welcome Message</h2></div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msgWelcome"></div>
+        <form id="welcomeForm">
+          <div class="form-group">
+            <label for="welcomeMsg">Initial AI Chat Message (supports HTML)</label>
+            <textarea id="welcomeMsg" class="form-control" rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Welcome Message</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-card-header">
+        <h2>AI Trip Responses</h2>
+        <button class="btn btn-primary btn-sm" id="addAiCategory">+ Add Category</button>
+      </div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msgAi"></div>
+        <p class="form-hint" style="margin-bottom:0.75rem;">Each category (e.g. valleys, trekking, lakes) has an array of response strings. When a user generates a trek with that interest, a random response is picked.</p>
+        <div id="aiContainer"></div>
+        <button type="button" class="btn btn-primary" id="saveAi" style="margin-top:0.75rem;">Save AI Responses</button>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-card-header">
+        <h2>Chat Keyword Responses</h2>
+        <button class="btn btn-primary btn-sm" id="addChat">+ Add Response</button>
+      </div>
+      <div class="dev-card-body">
+        <div class="settings-msg" id="msgChat"></div>
+        <p class="form-hint" style="margin-bottom:0.75rem;">When the user's chat message contains a keyword, the matching response is sent. Keys are checked in order — first match wins.</p>
+        <div id="chatContainer"></div>
+        <button type="button" class="btn btn-primary" id="saveChat" style="margin-top:0.75rem;">Save Chat Responses</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/developer.js"></script>
+  <script>
+    initDevLayout();
+
+    var aiResponses = {};
+    var chatResponses = {};
+
+    function renderAiResponses() {
+      var c = document.getElementById('aiContainer');
+      c.innerHTML = '';
+      var keys = Object.keys(aiResponses);
+      keys.forEach(function(key) {
+        var responses = aiResponses[key] || [];
+        var div = document.createElement('div');
+        div.className = 'repeater-item';
+        var responsesHtml = '';
+        responses.forEach(function(r, ri) {
+          responsesHtml += '<div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">' +
+            '<textarea class="form-control ai-resp" data-key="' + escapeHtml(key) + '" rows="2" style="flex:1;">' + escapeHtml(r) + '</textarea>' +
+            '<button type="button" class="btn btn-danger btn-sm ai-resp-remove" data-key="' + escapeHtml(key) + '" data-ri="' + ri + '" style="align-self:start;">X</button>' +
+          '</div>';
+        });
+        div.innerHTML =
+          '<button type="button" class="remove-btn ai-cat-remove" data-key="' + escapeHtml(key) + '">&times;</button>' +
+          '<div class="form-group"><label>Category Key</label><input type="text" class="form-control ai-key" value="' + escapeHtml(key) + '" readonly style="background:#f1f5f9;"></div>' +
+          '<label style="font-size:0.8rem;font-weight:500;display:block;margin-bottom:0.35rem;">Responses</label>' +
+          responsesHtml +
+          '<button type="button" class="btn btn-outline btn-sm ai-add-resp" data-key="' + escapeHtml(key) + '">+ Add Response</button>';
+        c.appendChild(div);
+      });
+
+      c.querySelectorAll('.ai-cat-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() { delete aiResponses[this.dataset.key]; renderAiResponses(); });
+      });
+      c.querySelectorAll('.ai-resp-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          aiResponses[this.dataset.key].splice(parseInt(this.dataset.ri), 1);
+          renderAiResponses();
+        });
+      });
+      c.querySelectorAll('.ai-add-resp').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          aiResponses[this.dataset.key].push('');
+          renderAiResponses();
+        });
+      });
+    }
+
+    function renderChatResponses() {
+      var c = document.getElementById('chatContainer');
+      c.innerHTML = '';
+      var keys = Object.keys(chatResponses);
+      keys.forEach(function(key, i) {
+        var div = document.createElement('div');
+        div.className = 'response-pair';
+        div.innerHTML =
+          '<input type="text" class="form-control chat-key" value="' + escapeHtml(key) + '" placeholder="keyword">' +
+          '<textarea class="form-control chat-val" rows="2" placeholder="Response text">' + escapeHtml(chatResponses[key]) + '</textarea>' +
+          '<button type="button" class="btn btn-danger btn-sm chat-remove" data-key="' + escapeHtml(key) + '">X</button>';
+        c.appendChild(div);
+      });
+      c.querySelectorAll('.chat-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() { delete chatResponses[this.dataset.key]; renderChatResponses(); });
+      });
+    }
+
+    (async () => {
+      var s = await loadSettings();
+      var ai = s.aiTripPlanner || {};
+      document.getElementById('welcomeMsg').value = ai.welcomeMessage || '';
+      aiResponses = ai.aiResponses || {};
+      chatResponses = ai.chatResponses || {};
+      renderAiResponses();
+      renderChatResponses();
+    })();
+
+    document.getElementById('addAiCategory').addEventListener('click', function() {
+      var key = prompt('Enter category key (e.g. valleys, trekking):');
+      if (key && key.trim() && !aiResponses[key.trim()]) {
+        aiResponses[key.trim()] = [''];
+        renderAiResponses();
+      }
+    });
+
+    document.getElementById('addChat').addEventListener('click', function() {
+      var key = prompt('Enter keyword (e.g. hunza, budget):');
+      if (key && key.trim() && !chatResponses[key.trim()]) {
+        chatResponses[key.trim()] = '';
+        renderChatResponses();
+      }
+    });
+
+    document.getElementById('welcomeForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var msgEl = document.getElementById('msgWelcome');
+      try {
+        await saveSettings({ 'aiTripPlanner.welcomeMessage': document.getElementById('welcomeMsg').value.trim() });
+        showMsg(msgEl, 'Welcome message saved!', false);
+      } catch (err) { showMsg(msgEl, err.message, true); }
+    });
+
+    document.getElementById('saveAi').addEventListener('click', async function() {
+      var msgEl = document.getElementById('msgAi');
+      // Collect current values from textareas
+      var collected = {};
+      document.querySelectorAll('.ai-key').forEach(function(keyEl) {
+        var key = keyEl.value;
+        var textareas = document.querySelectorAll('.ai-resp[data-key="' + key + '"]');
+        collected[key] = [];
+        textareas.forEach(function(ta) { if (ta.value.trim()) collected[key].push(ta.value.trim()); });
+      });
+      try {
+        await saveSettings({ 'aiTripPlanner.aiResponses': collected });
+        aiResponses = collected;
+        showMsg(msgEl, 'AI responses saved!', false);
+      } catch (err) { showMsg(msgEl, err.message, true); }
+    });
+
+    document.getElementById('saveChat').addEventListener('click', async function() {
+      var msgEl = document.getElementById('msgChat');
+      var collected = {};
+      var keys = document.querySelectorAll('.chat-key');
+      var vals = document.querySelectorAll('.chat-val');
+      keys.forEach(function(el, i) {
+        if (el.value.trim()) collected[el.value.trim()] = vals[i].value.trim();
+      });
+      try {
+        await saveSettings({ 'aiTripPlanner.chatResponses': collected });
+        chatResponses = collected;
+        showMsg(msgEl, 'Chat responses saved!', false);
+      } catch (err) { showMsg(msgEl, err.message, true); }
+    });
+  </script>
+</body>
+</html>

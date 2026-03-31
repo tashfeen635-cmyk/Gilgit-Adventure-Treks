@@ -198,7 +198,8 @@
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-  $$('.reveal-up').forEach(el => revealObserver.observe(el));
+  // NOTE: .reveal-up observers are started inside init() AFTER applySiteSettings()
+  // to prevent flash of old hardcoded content before dynamic settings are applied.
 
   const statsObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -208,9 +209,6 @@
       }
     });
   }, { threshold: 0.5 });
-
-  const heroStats = $('.hero-stats');
-  if (heroStats) statsObserver.observe(heroStats);
 
   /* --------------------------------------------------------
      DESTINATION CARDS
@@ -1378,6 +1376,12 @@
     renderGallery();
     renderTeam();
     updateNavAuth();
+
+    // Start reveal animations NOW — after settings are applied and content rendered
+    // This prevents flash of old hardcoded text before dynamic settings replace it
+    $$('.reveal-up').forEach(el => revealObserver.observe(el));
+    const heroStats = $('.hero-stats');
+    if (heroStats) statsObserver.observe(heroStats);
 
     // Hide loading screen
     const loader = document.getElementById('loadingScreen');

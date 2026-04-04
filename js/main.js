@@ -529,7 +529,9 @@
     const lower = text.toLowerCase();
     let response = chatResponses.default;
     for (const [key, val] of Object.entries(chatResponses)) {
-      if (lower.includes(key)) {
+      if (key === 'default') continue;
+      const regex = new RegExp('\\b' + key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (regex.test(lower)) {
         response = val;
         break;
       }

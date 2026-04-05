@@ -14,7 +14,7 @@
   <!-- ============ LOADING SCREEN ============ -->
   <div class="loading-screen" id="loadingScreen">
     <div class="loading-content">
-      <img src="images/logo.png" alt="Gilgit Adventure Treks" class="loading-logo">
+      <img src="" alt="" class="loading-logo" style="opacity:0;transition:opacity 0.3s">
       <h2 class="loading-title">Gilgit Adventure Treks</h2>
       <div class="loading-spinner">
         <div class="spinner-ring"></div>
@@ -33,9 +33,13 @@
           if(t&&s.loadingScreen.title)t.textContent=s.loadingScreen.title;
           if(p&&s.loadingScreen.text)p.textContent=s.loadingScreen.text;
         }
-        if(s.branding&&s.branding.logoUrl){
+        if(s.branding){
           var logo=document.querySelector('.loading-logo');
-          if(logo)logo.src=s.branding.logoUrl;
+          if(logo){
+            logo.src=s.branding.logoUrl||'images/logo.png';
+            if(s.branding.logoBorderRadius!=null)logo.style.borderRadius=s.branding.logoBorderRadius+'%';
+            logo.onload=function(){logo.style.opacity='1';};
+          }
         }
       }
       return d;

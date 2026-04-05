@@ -241,10 +241,10 @@
         var visited = new Uint8Array(w * h);
 
         function isWhitish(idx) {
-          return px[idx] > 220 && px[idx+1] > 220 && px[idx+2] > 220 && px[idx+3] > 0;
+          return px[idx] > 180 && px[idx+1] > 180 && px[idx+2] > 180 && px[idx+3] > 0;
         }
 
-        // Flood-fill from a starting pixel — only spreads through white-ish connected pixels
+        // Flood-fill from a starting pixel — only spreads through light-colored connected pixels
         function floodFill(startX, startY) {
           var idx = (startY * w + startX) * 4;
           if (!isWhitish(idx)) return;

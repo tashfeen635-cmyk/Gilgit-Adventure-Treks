@@ -1252,7 +1252,12 @@
     if (s.branding) {
       const b = s.branding;
       if (b.logoUrl) {
-        $$('.logo-img').forEach(img => { img.src = b.logoUrl; img.alt = b.companyName || ''; });
+        $$('.logo-img').forEach(img => {
+          img.src = b.logoUrl;
+          img.alt = b.companyName || '';
+          if (b.logoSize) { img.style.width = b.logoSize + 'px'; img.style.height = b.logoSize + 'px'; }
+          if (b.logoBorderRadius != null) img.style.borderRadius = b.logoBorderRadius + '%';
+        });
       }
       if (b.companyName) {
         const logoSpan = $('.nav-logo span');
@@ -1260,8 +1265,37 @@
         document.title = b.companyName;
       }
       if (b.faviconUrl) {
-        const favicon = $('link[rel="icon"]');
-        if (favicon) favicon.href = b.faviconUrl;
+        // Apply border-radius by rendering favicon through canvas
+        if (b.faviconBorderRadius > 0) {
+          const fImg = new Image();
+          fImg.crossOrigin = 'anonymous';
+          fImg.onload = function() {
+            const size = 64;
+            const c = document.createElement('canvas');
+            c.width = size; c.height = size;
+            const ctx = c.getContext('2d');
+            const r = (b.faviconBorderRadius / 100) * (size / 2);
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.lineTo(size - r, 0);
+            ctx.quadraticCurveTo(size, 0, size, r);
+            ctx.lineTo(size, size - r);
+            ctx.quadraticCurveTo(size, size, size - r, size);
+            ctx.lineTo(r, size);
+            ctx.quadraticCurveTo(0, size, 0, size - r);
+            ctx.lineTo(0, r);
+            ctx.quadraticCurveTo(0, 0, r, 0);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(fImg, 0, 0, size, size);
+            const favicon = $('link[rel="icon"]');
+            if (favicon) favicon.href = c.toDataURL('image/png');
+          };
+          fImg.src = b.faviconUrl;
+        } else {
+          const favicon = $('link[rel="icon"]');
+          if (favicon) favicon.href = b.faviconUrl;
+        }
       }
       if (b.companyShortName) {
         const footerLogoSpan = $('.footer-brand .nav-logo span');

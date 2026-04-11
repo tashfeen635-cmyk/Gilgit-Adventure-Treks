@@ -124,10 +124,18 @@
   });
 
   $$('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
+      // On mobile, toggle dropdown instead of closing menu
+      if (link.classList.contains('nav-link--dropdown') && window.innerWidth <= 768) {
+        e.preventDefault();
+        link.parentElement.classList.toggle('open');
+        return;
+      }
       navLinks.classList.remove('open');
       navToggle.classList.remove('active');
       navToggle.setAttribute('aria-expanded', 'false');
+      // Close any open dropdowns
+      $$('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
     });
   });
 
@@ -878,12 +886,14 @@
   newsletterForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = $('#newsletterEmail').value;
+    const nameInput = $('#newsletterName');
+    const name = nameInput ? nameInput.value : '';
     if (email) {
       try {
         await fetch('/api/subscribers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({ email, name })
         });
       } catch (err) {
         // Silently fail — UI still shows success

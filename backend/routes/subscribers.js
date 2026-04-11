@@ -1,18 +1,40 @@
 const router = require('express').Router();
 const Subscriber = require('../models/Subscriber');
 const auth = require('../middleware/auth');
+const { sendSubscriberConfirmation } = require('../utils/mailer');
 
 // POST /api/subscribers (public)
 router.post('/', async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, name } = req.body;
     if (!email) return res.status(400).json({ message: 'Email is required' });
 
-    const existing = await Subscriber.findOne({ email });
-    if (existing) return res.json({ message: 'Already subscribed' });
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const cleanName = name ? String(name).trim() : '';
 
-    const subscriber = await Subscriber.create({ email });
-    res.status(201).json(subscriber);
+    const existing = await Subscriber.findOne({ email: normalizedEmail });
+    if (existing) {
+      // Still try to resend confirmation so the user gets their welcome email
+      try {
+        await sendSubscriberConfirmation({ email: normalizedEmail, name: cleanName || existing.name });
+      } catch (mailErr) {
+        console.error('[subscribers] Failed to resend confirmation:', mailErr.message);
+      }
+      return res.json({ message: 'Already subscribed', emailSent: true });
+    }
+
+    const subscriber = await Subscriber.create({ email: normalizedEmail, name: cleanName });
+
+    // Send confirmation email (non-blocking for the response if it fails)
+    let emailSent = false;
+    try {
+      const result = await sendSubscriberConfirmation({ email: normalizedEmail, name: cleanName });
+      emailSent = !!result.sent;
+    } catch (mailErr) {
+      console.error('[subscribers] Failed to send confirmation:', mailErr.message);
+    }
+
+    res.status(201).json({ ...subscriber.toObject(), emailSent });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

@@ -59,8 +59,26 @@
         <span class="hamburger-line"></span>
       </button>
       <ul class="nav-links" id="navLinks" role="list">
-        <li><a href="#destinations" class="nav-link">Destinations</a></li>
-        <li><a href="#map" class="nav-link">Explore Map</a></li>
+        <li class="nav-dropdown">
+          <a href="#destinations" class="nav-link nav-link--dropdown">Destinations <span class="nav-caret" aria-hidden="true">▾</span></a>
+          <ul class="nav-dropdown-menu" role="list">
+            <li><a href="#destinations" class="nav-dropdown-item" data-destination="Gilgit Valley">Gilgit Valley</a></li>
+            <li><a href="#destinations" class="nav-dropdown-item" data-destination="Nalture Valley">Nalture Valley</a></li>
+            <li><a href="#destinations" class="nav-dropdown-item" data-destination="K2 Base Camp">K2 Base Camp</a></li>
+            <li><a href="#destinations" class="nav-dropdown-item" data-destination="Baltistan Valley">Baltistan Valley</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
+          <a href="#jeep-safaris" class="nav-link nav-link--dropdown">Jeep Safaris <span class="nav-caret" aria-hidden="true">▾</span></a>
+          <ul class="nav-dropdown-menu" role="list">
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Deosai Plains">Deosai Plains</a></li>
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Fairy Meadows">Fairy Meadows</a></li>
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Shandur Pass">Shandur Pass</a></li>
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Khunjerab Pass">Khunjerab Pass</a></li>
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Shimshal Valley">Shimshal Valley</a></li>
+            <li><a href="#jeep-safaris" class="nav-dropdown-item" data-safari="Hushe Valley">Hushe Valley</a></li>
+          </ul>
+        </li>
         <li><a href="#trip-planner" class="nav-link">Trip Planner</a></li>
         <li><a href="#booking" class="nav-link">Book Now</a></li>
         <li><a href="#reviews" class="nav-link">Reviews</a></li>
@@ -493,6 +511,7 @@
         <p>Subscribe for exclusive Northern Pakistan trek deals, weather updates, and adventure guides delivered to your inbox.</p>
         <form class="newsletter-form" id="newsletterForm" aria-label="Newsletter signup">
           <div class="newsletter-input-wrapper">
+            <input type="text" id="newsletterName" placeholder="Your name" required aria-label="Your name">
             <input type="email" id="newsletterEmail" placeholder="Enter your email address" required aria-label="Email address">
             <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
           </div>

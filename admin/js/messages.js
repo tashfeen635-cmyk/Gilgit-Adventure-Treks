@@ -2,10 +2,12 @@ initAdminLayout();
 
 let allMessages = [];
 let currentMsgId = null;
+let msgPage = 1;
 
 async function loadMessages() {
   try {
     allMessages = await apiCall('/contact');
+    msgPage = 1;
     renderTable();
   } catch (err) {
     console.error(err);
@@ -19,12 +21,14 @@ function renderTable() {
 
   if (filtered.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94a3b8;">No messages found</td></tr>';
+    renderPagination('msgPagination', 1, 1, function(){});
     return;
   }
 
-  tbody.innerHTML = filtered.map((m, i) => `
+  const p = paginate(filtered, msgPage, 15);
+  tbody.innerHTML = p.data.map((m, i) => `
     <tr style="${m.status === 'unread' ? 'font-weight:600;' : ''}">
-      <td>${i + 1}</td>
+      <td>${(p.page - 1) * 15 + i + 1}</td>
       <td>${escapeHtml(m.name)}</td>
       <td>${escapeHtml(m.email)}</td>
       <td>${escapeHtml(m.subject)}</td>
@@ -36,6 +40,7 @@ function renderTable() {
       </td>
     </tr>
   `).join('');
+  renderPagination('msgPagination', p.page, p.totalPages, function(pg) { msgPage = pg; renderTable(); });
 }
 
 function viewMsg(id) {
@@ -53,7 +58,6 @@ function viewMsg(id) {
 
   openModal('viewModal');
 
-  // Auto-mark as read if unread
   if (m.status === 'unread') {
     apiCall('/contact/' + id, {
       method: 'PUT',
@@ -92,6 +96,6 @@ async function deleteMsg(id) {
   }
 }
 
-document.getElementById('statusFilter').addEventListener('change', renderTable);
+document.getElementById('statusFilter').addEventListener('change', function() { msgPage = 1; renderTable(); });
 
 loadMessages();

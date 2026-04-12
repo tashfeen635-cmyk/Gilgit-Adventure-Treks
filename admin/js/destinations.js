@@ -1,4 +1,5 @@
 initAdminLayout();
+setupImageUpload('dImageFile', 'dImage');
 
 let allDestinations = [];
 

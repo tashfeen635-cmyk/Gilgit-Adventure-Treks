@@ -1,4 +1,5 @@
 initAdminLayout();
+setupImageUpload('tImageFile', 'tImage');
 
 let allMembers = [];
 

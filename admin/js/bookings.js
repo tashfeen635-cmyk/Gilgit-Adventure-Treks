@@ -1,10 +1,12 @@
 initAdminLayout();
 
 let allBookings = [];
+let currentPage = 1;
 
 async function loadBookings() {
   try {
     allBookings = await apiCall('/bookings');
+    currentPage = 1;
     renderTable();
   } catch (err) {
     console.error(err);
@@ -15,9 +17,11 @@ function renderTable() {
   const tbody = document.getElementById('bookBody');
   if (allBookings.length === 0) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#94a3b8;">No bookings yet</td></tr>';
+    renderPagination('bookPagination', 1, 1, function(){});
     return;
   }
-  tbody.innerHTML = allBookings.map(b => `
+  const p = paginate(allBookings, currentPage, 15);
+  tbody.innerHTML = p.data.map(b => `
     <tr>
       <td><strong>${escapeHtml(b.reference)}</strong></td>
       <td>
@@ -38,6 +42,7 @@ function renderTable() {
       </td>
     </tr>
   `).join('');
+  renderPagination('bookPagination', p.page, p.totalPages, function(pg) { currentPage = pg; renderTable(); });
 }
 
 function editStatus(id, currentStatus) {

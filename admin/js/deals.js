@@ -1,4 +1,5 @@
 initAdminLayout();
+setupImageUpload('dlImageFile', 'dlImage');
 
 let allDeals = [];
 

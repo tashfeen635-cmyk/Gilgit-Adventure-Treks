@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Review = require('../models/Review');
 const auth = require('../middleware/auth');
 const userAuth = require('../middleware/userAuth');
+const { validate, schemas } = require('../middleware/validate');
 
 // GET /api/reviews (public — approved + legacy only)
 router.get('/', async (req, res) => {
@@ -26,7 +27,7 @@ router.get('/all', auth, async (req, res) => {
 });
 
 // POST /api/reviews/user (user-submitted, pending approval)
-router.post('/user', userAuth, async (req, res) => {
+router.post('/user', userAuth, validate(schemas.userReview), async (req, res) => {
   try {
     const { destination, rating, text } = req.body;
     const User = require('../models/User');

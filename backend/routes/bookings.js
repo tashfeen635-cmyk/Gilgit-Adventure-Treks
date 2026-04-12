@@ -2,10 +2,11 @@ const router = require('express').Router();
 const Booking = require('../models/Booking');
 const auth = require('../middleware/auth');
 const optionalUserAuth = require('../middleware/optionalUserAuth');
-const { sendBookingConfirmation } = require('../utils/mailer');
+const { validate, schemas } = require('../middleware/validate');
+const { sendBookingConfirmation, sendAdminNewBookingNotification } = require('../utils/mailer');
 
 // POST /api/bookings (public, optionally authenticated)
-router.post('/', optionalUserAuth, async (req, res) => {
+router.post('/', optionalUserAuth, validate(schemas.booking), async (req, res) => {
   try {
     const data = { ...req.body };
     if (req.user) {
@@ -23,6 +24,13 @@ router.post('/', optionalUserAuth, async (req, res) => {
       } catch (err) {
         console.error('[mailer] Booking confirmation email failed:', err.message);
       }
+    }
+
+    // Notify admin about new booking
+    try {
+      await sendAdminNewBookingNotification(booking);
+    } catch (err) {
+      console.error('[mailer] Admin booking notification failed:', err.message);
     }
 
     res.status(201).json({ ...booking.toObject(), emailSent });

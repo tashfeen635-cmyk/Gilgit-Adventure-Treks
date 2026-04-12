@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const Subscriber = require('../models/Subscriber');
 const auth = require('../middleware/auth');
+const { validate, schemas } = require('../middleware/validate');
 const { sendSubscriberConfirmation } = require('../utils/mailer');
 
 // POST /api/subscribers (public)
-router.post('/', async (req, res) => {
+router.post('/', validate(schemas.subscriber), async (req, res) => {
   try {
     const { email, name } = req.body;
     if (!email) return res.status(400).json({ message: 'Email is required' });

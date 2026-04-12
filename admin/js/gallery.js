@@ -1,4 +1,5 @@
 initAdminLayout();
+setupImageUpload('gUrlFile', 'gUrl');
 
 let allImages = [];
 

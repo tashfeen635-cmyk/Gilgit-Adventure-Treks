@@ -210,7 +210,7 @@
   </div>
   <script>
     // Early fetch: update loading screen + store promise for main.js to reuse
-    window.__publicDataPromise = fetch('/api/public-data').then(function(r){return r.json()}).then(function(d){
+    window.__publicDataPromise = fetch('/api/page-data?need=destinations,reviews,deals,team').then(function(r){return r.json()}).then(function(d){
       if(d.settings){
         var s=d.settings;
         if(s.loadingScreen){

@@ -1043,14 +1043,12 @@
 
   async function init() {
     try {
-      // Reuse pre-fetched data from loading screen script, or fetch fresh
-      const data = (window.__publicDataPromise && await window.__publicDataPromise) || await fetch('/api/public-data').then(r => r.json());
+      // Reuse pre-fetched data (lightweight: destinations, reviews, deals, team + settings)
+      const data = (window.__publicDataPromise && await window.__publicDataPromise) || await fetch('/api/page-data?need=destinations,reviews,deals,team').then(r => r.json());
       delete window.__publicDataPromise;
       destinations = data.destinations || [];
       reviews = data.reviews || [];
       deals = data.deals || [];
-      videos = data.videos || [];
-      galleryImages = data.gallery || [];
       teamMembers = data.team || [];
 
       // Apply site settings before rendering
@@ -1061,28 +1059,36 @@
       console.warn('API not available, site will show empty sections:', err.message);
     }
 
-    // Render data-dependent sections
+    // Render above-fold + critical sections immediately
     renderTopDestinations();
     renderMapList();
     renderReviews();
     renderDeals();
-    renderVideos();
-    renderGallery();
     renderTeam();
     updateNavAuth();
     injectDestinationSchema();
 
-    // Start reveal animations NOW — after settings are applied and content rendered
-    // This prevents flash of old hardcoded text before dynamic settings replace it
+    // Start reveal animations
     $$('.reveal-up').forEach(el => revealObserver.observe(el));
     const heroStats = $('.hero-stats');
     if (heroStats) statsObserver.observe(heroStats);
 
-    // Hide loading screen
+    // Hide loading screen fast
     const loader = document.getElementById('loadingScreen');
     if (loader) {
       loader.classList.add('hidden');
       setTimeout(() => loader.remove(), 600);
+    }
+
+    // Lazy-load gallery & videos (not needed for initial view)
+    try {
+      const extra = await fetch('/api/page-data?need=gallery,videos').then(r => r.json());
+      videos = extra.videos || [];
+      galleryImages = extra.gallery || [];
+      renderVideos();
+      renderGallery();
+    } catch (err) {
+      console.warn('Failed to load gallery/videos:', err.message);
     }
   }
 

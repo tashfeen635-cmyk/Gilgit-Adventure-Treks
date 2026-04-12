@@ -23,7 +23,6 @@
           "js/**",
           "images/**",
           "admin/**",
-          "developer/**",
           "videos/**"
         ]
       }
@@ -39,8 +38,11 @@
       "dest": "server.js"
     },
     {
-      "src": "/developer/(.*)",
-      "dest": "server.js"
+      "src": "/(.*\\.(?:css|js|jpg|jpeg|png|gif|webp|svg|ico|woff2?))$",
+      "dest": "server.js",
+      "headers": {
+        "Cache-Control": "public, max-age=2592000, immutable"
+      }
     },
     {
       "src": "/(.*)",

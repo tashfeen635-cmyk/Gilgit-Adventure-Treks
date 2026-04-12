@@ -74,9 +74,29 @@ app.use(express.static(path.join(__dirname)));
 // Serve admin panel
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
+// Health check / warmup endpoint (fast, triggers DB connection early)
+app.get('/api/health', async (req, res) => {
+  try {
+    await dbReady;
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(503).json({ ok: false });
+  }
+});
+
+// In-memory cache for API responses (2 min TTL)
+const apiCache = { data: null, timestamp: 0, ttl: 2 * 60 * 1000 };
+
 // Combined public data endpoint — single request instead of 6 + site settings
 app.get('/api/public-data', async (req, res) => {
   try {
+    // Return cached response if fresh
+    if (apiCache.data && (Date.now() - apiCache.timestamp) < apiCache.ttl) {
+      res.setHeader('X-Cache', 'HIT');
+      res.setHeader('Cache-Control', 'public, max-age=120');
+      return res.json(apiCache.data);
+    }
+
     await dbReady;
     const SiteSettings = require('./backend/models/SiteSettings');
     const [destinations, reviews, deals, videos, gallery, team, settings] = await Promise.all([
@@ -88,18 +108,36 @@ app.get('/api/public-data', async (req, res) => {
       require('./backend/models/TeamMember').find().sort({ sortOrder: 1 }).lean(),
       SiteSettings.getSettings()
     ]);
-    res.json({ destinations, reviews, deals, videos, gallery, team, settings });
+    const result = { destinations, reviews, deals, videos, gallery, team, settings };
+
+    // Cache the result
+    apiCache.data = result;
+    apiCache.timestamp = Date.now();
+
+    res.setHeader('X-Cache', 'MISS');
+    res.setHeader('Cache-Control', 'public, max-age=120');
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load data' });
   }
 });
 
 // Lightweight endpoint — only settings + specific collections (faster for subpages)
+const pageCache = {};
 app.get('/api/page-data', async (req, res) => {
   try {
+    const need = (req.query.need || '').split(',').filter(Boolean);
+    const cacheKey = need.sort().join(',');
+
+    // Return cached response if fresh (2 min)
+    if (pageCache[cacheKey] && (Date.now() - pageCache[cacheKey].ts) < 120000) {
+      res.setHeader('X-Cache', 'HIT');
+      res.setHeader('Cache-Control', 'public, max-age=120');
+      return res.json(pageCache[cacheKey].data);
+    }
+
     await dbReady;
     const SiteSettings = require('./backend/models/SiteSettings');
-    const need = (req.query.need || '').split(',').filter(Boolean);
     const queries = { settings: SiteSettings.getSettings() };
 
     if (need.includes('destinations')) queries.destinations = require('./backend/models/Destination').find().sort({ id: 1 }).lean();
@@ -113,6 +151,12 @@ app.get('/api/page-data', async (req, res) => {
     const values = await Promise.all(keys.map(k => queries[k]));
     const result = {};
     keys.forEach((k, i) => { result[k] = values[i]; });
+
+    // Cache result
+    pageCache[cacheKey] = { data: result, ts: Date.now() };
+
+    res.setHeader('X-Cache', 'MISS');
+    res.setHeader('Cache-Control', 'public, max-age=120');
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load data' });

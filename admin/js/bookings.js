@@ -14,12 +14,18 @@ async function loadBookings() {
 function renderTable() {
   const tbody = document.getElementById('bookBody');
   if (allBookings.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#94a3b8;">No bookings yet</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#94a3b8;">No bookings yet</td></tr>';
     return;
   }
   tbody.innerHTML = allBookings.map(b => `
     <tr>
       <td><strong>${escapeHtml(b.reference)}</strong></td>
+      <td>
+        ${b.customerName ? '<strong>' + escapeHtml(b.customerName) + '</strong><br>' : ''}
+        ${b.customerEmail ? '<span style="font-size:0.75rem;color:#64748b;">' + escapeHtml(b.customerEmail) + '</span><br>' : ''}
+        ${b.customerPhone ? '<span style="font-size:0.75rem;color:#64748b;">' + escapeHtml(b.customerPhone) + '</span>' : ''}
+        ${!b.customerName && !b.customerEmail ? '<span style="color:#94a3b8;">—</span>' : ''}
+      </td>
       <td>${escapeHtml(b.destination)}</td>
       <td>${b.checkIn || 'Flexible'} &rarr; ${b.checkOut || 'Flexible'}</td>
       <td>${b.adults}A ${b.children ? '+ ' + b.children + 'C' : ''}</td>

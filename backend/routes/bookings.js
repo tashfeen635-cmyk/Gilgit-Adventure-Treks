@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Booking = require('../models/Booking');
 const auth = require('../middleware/auth');
 const optionalUserAuth = require('../middleware/optionalUserAuth');
+const { sendBookingConfirmation } = require('../utils/mailer');
 
 // POST /api/bookings (public, optionally authenticated)
 router.post('/', optionalUserAuth, async (req, res) => {
@@ -12,6 +13,13 @@ router.post('/', optionalUserAuth, async (req, res) => {
     }
     const booking = await Booking.create(data);
     res.status(201).json(booking);
+
+    // Send confirmation email in background (don't block response)
+    if (booking.customerEmail) {
+      sendBookingConfirmation(booking).catch(err => {
+        console.error('[mailer] Booking confirmation email failed:', err.message);
+      });
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

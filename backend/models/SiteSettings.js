@@ -146,8 +146,8 @@ const siteSettingsSchema = new mongoose.Schema({
     geoLatitude: { type: String, default: '35.9208' },
     geoLongitude: { type: String, default: '74.3144' },
     socialProfiles: {
-      facebook: { type: String, default: '' },
-      instagram: { type: String, default: '' },
+      facebook: { type: String, default: 'https://www.facebook.com/gilgitadventuretreks' },
+      instagram: { type: String, default: 'https://www.instagram.com/gilgit_adventure_treks/' },
       youtube: { type: String, default: '' },
       tiktok: { type: String, default: '' },
       twitter: { type: String, default: '' }

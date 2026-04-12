@@ -16,7 +16,7 @@ const siteSettingsSchema = new mongoose.Schema({
   hero: {
     slides: [{ imageUrl: String, alt: String }],
     subtitle: { type: String, default: "Pakistan's Premier Adventure Company" },
-    title: { type: String, default: 'Explore the Majestic<br>Northern Areas of Pakistan' },
+    title: { type: String, default: "Pakistan's Best Treks, Tours &<br>Mountain Adventures" },
     description: { type: String, default: "From the magical Fairy Meadows to the mighty K2 Base Camp — experience the world's most spectacular mountain landscapes with expert local guides." }
   },
 
@@ -131,6 +131,33 @@ const siteSettingsSchema = new mongoose.Schema({
   loadingScreen: {
     title: { type: String, default: 'Gilgit Adventure Treks' },
     text: { type: String, default: 'Preparing your mountain adventure...' }
+  },
+
+  seo: {
+    siteTitle: { type: String, default: 'Gilgit Adventure Treks — Pakistan\'s #1 Adventure & Trekking Company' },
+    metaDescription: { type: String, default: 'Book K2 Base Camp treks, Fairy Meadows tours, Hunza Valley trips & Karakoram Highway jeep safaris with Pakistan\'s most trusted adventure company. Expert local guides, best prices guaranteed.' },
+    keywords: { type: String, default: 'gilgit adventure treks, k2 base camp trek, fairy meadows tour, hunza valley trekking, pakistan adventure tours, karakoram highway, skardu tours, northern pakistan trekking, gilgit baltistan tours, nanga parbat trek' },
+    ogImage: { type: String, default: 'images/k2.jpg' },
+    canonicalUrl: { type: String, default: 'https://gilgitadventuretreks.com' },
+    founderName: { type: String, default: 'Aisha' },
+    foundingYear: { type: String, default: '2018' },
+    priceRange: { type: String, default: '$$' },
+    officeAddress: { type: String, default: 'Main Bazaar, Gilgit, Gilgit-Baltistan, Pakistan' },
+    geoLatitude: { type: String, default: '35.9208' },
+    geoLongitude: { type: String, default: '74.3144' },
+    socialProfiles: {
+      facebook: { type: String, default: '' },
+      instagram: { type: String, default: '' },
+      youtube: { type: String, default: '' },
+      tiktok: { type: String, default: '' },
+      twitter: { type: String, default: '' }
+    },
+    googleVerification: { type: String, default: '' },
+    bingVerification: { type: String, default: '' },
+    ga4MeasurementId: { type: String, default: '' },
+    gtmContainerId: { type: String, default: '' },
+    fbPixelId: { type: String, default: '' },
+    clarityId: { type: String, default: '' }
   }
 
 }, { timestamps: true });

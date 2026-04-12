@@ -12,14 +12,20 @@ router.post('/', optionalUserAuth, async (req, res) => {
       data.userId = req.user.id;
     }
     const booking = await Booking.create(data);
-    res.status(201).json(booking);
 
-    // Send confirmation email in background (don't block response)
+    // Send confirmation email BEFORE response (Vercel kills function after res.json)
+    let emailSent = false;
     if (booking.customerEmail) {
-      sendBookingConfirmation(booking).catch(err => {
+      try {
+        const result = await sendBookingConfirmation(booking);
+        emailSent = result.sent;
+        if (!emailSent) console.warn('[mailer] Email not sent:', result.reason);
+      } catch (err) {
         console.error('[mailer] Booking confirmation email failed:', err.message);
-      });
+      }
     }
+
+    res.status(201).json({ ...booking.toObject(), emailSent });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

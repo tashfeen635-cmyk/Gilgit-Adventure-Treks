@@ -206,10 +206,18 @@ function buildBookingConfirmationText(booking) {
 }
 
 async function sendBookingConfirmation(booking) {
-  if (!booking.customerEmail) return { sent: false, reason: 'no_customer_email' };
+  console.log('[mailer] Attempting booking confirmation email to:', booking.customerEmail);
+
+  if (!booking.customerEmail) {
+    console.warn('[mailer] No customer email provided');
+    return { sent: false, reason: 'no_customer_email' };
+  }
 
   const transporter = getTransporter();
-  if (!transporter) return { sent: false, reason: 'email_not_configured' };
+  if (!transporter) {
+    console.warn('[mailer] Transporter not configured — EMAIL_USER:', !!process.env.EMAIL_USER, 'EMAIL_PASS:', !!process.env.EMAIL_PASS);
+    return { sent: false, reason: 'email_not_configured' };
+  }
 
   const fromName = 'Gilgit Adventure Treks';
   const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER;
@@ -222,6 +230,7 @@ async function sendBookingConfirmation(booking) {
     text: buildBookingConfirmationText(booking)
   });
 
+  console.log('[mailer] Booking confirmation sent:', info.messageId);
   return { sent: true, messageId: info.messageId };
 }
 

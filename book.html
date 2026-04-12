@@ -235,8 +235,9 @@
                   <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="38" fill="none" stroke="#2D6A4F" stroke-width="3"/><path d="M24 40l10 10 22-22" fill="none" stroke="#2D6A4F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
                 <h3>Booking Confirmed!</h3>
-                <p>Your Northern Pakistan adventure is booked! Check your email for confirmation details, packing list, and travel tips.</p>
+                <p>Your Northern Pakistan adventure is booked!</p>
                 <p class="booking-ref">Booking Reference: <strong id="bookingRef">TJT-2026-XXXXX</strong></p>
+                <p id="emailConfirmMsg" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#dcfce7;color:#166534;border-radius:8px;font-size:0.9rem;">A confirmation receipt has been sent to your email. Please check your inbox (and spam folder).</p>
               </div>
             </div>
           </div>
@@ -689,6 +690,11 @@
           })
         });
         if (!resp.ok) throw new Error('Booking failed');
+        var result = await resp.json();
+        if (result.emailSent) {
+          var emailMsg = document.getElementById('emailConfirmMsg');
+          if (emailMsg) emailMsg.style.display = 'block';
+        }
       } catch (err) {
         console.error('Booking submission error:', err);
       }

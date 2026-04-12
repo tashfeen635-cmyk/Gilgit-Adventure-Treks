@@ -17,9 +17,8 @@ Allow: /css/
 Allow: /js/
 Allow: /images/
 
-# Block admin & developer panels
+# Block admin panel
 Disallow: /admin/
-Disallow: /developer/
 Disallow: /api/
 
 # Block auth pages from indexing

@@ -43,7 +43,6 @@ const submitLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 app.use('/api/users/login', authLimiter);
 app.use('/api/users/register', authLimiter);
-app.use('/api/dev/auth', authLimiter);
 app.use('/api/bookings', submitLimiter);
 app.use('/api/contact', submitLimiter);
 app.use('/api/subscribers', submitLimiter);
@@ -74,9 +73,6 @@ app.use(express.static(path.join(__dirname)));
 
 // Serve admin panel
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
-
-// Serve developer panel
-app.use('/developer', express.static(path.join(__dirname, 'developer')));
 
 // Combined public data endpoint — single request instead of 6 + site settings
 app.get('/api/public-data', async (req, res) => {
@@ -138,11 +134,6 @@ app.use('/api/team', require('./backend/routes/team'));
 
 // Chat AI route
 app.use('/api/chat', require('./backend/routes/chat'));
-
-// Developer routes
-app.use('/api/dev', require('./backend/routes/devAuth'));
-app.use('/api/dev/settings', require('./backend/routes/siteSettings'));
-app.use('/api/dev/admins', require('./backend/routes/devAdmin'));
 
 // 404 handler — SEO-friendly error page
 app.use((req, res) => {

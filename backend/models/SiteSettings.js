@@ -109,8 +109,8 @@ const siteSettingsSchema = new mongoose.Schema({
   },
 
   contact: {
-    whatsappNumber: { type: String, default: '' },
-    whatsappUrl: { type: String, default: '' },
+    whatsappNumber: { type: String, default: '+923465001043' },
+    whatsappUrl: { type: String, default: 'https://wa.me/923465001043' },
     email: { type: String, default: '' },
     address: { type: String, default: '' },
     phone: { type: String, default: '' }
@@ -148,7 +148,7 @@ const siteSettingsSchema = new mongoose.Schema({
     socialProfiles: {
       facebook: { type: String, default: 'https://www.facebook.com/gilgitadventuretreks' },
       instagram: { type: String, default: 'https://www.instagram.com/gilgit_adventure_treks/' },
-      youtube: { type: String, default: '' },
+      youtube: { type: String, default: 'https://www.youtube.com/@sabir4053' },
       tiktok: { type: String, default: '' },
       twitter: { type: String, default: '' }
     },

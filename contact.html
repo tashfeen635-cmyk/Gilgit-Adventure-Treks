@@ -476,7 +476,7 @@
     -------------------------------------------------------- */
     async function loadAndApplySettings() {
       try {
-        const res = await fetch('/api/public-data');
+        const res = await fetch('/api/page-data?need=');
         const data = await res.json();
         const s = data.settings;
         if (!s) return;

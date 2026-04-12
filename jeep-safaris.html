@@ -529,7 +529,7 @@
       var emptyEl = document.getElementById('safariEmpty');
 
       try {
-        var resp = await fetch('/api/public-data');
+        var resp = await fetch('/api/page-data?need=destinations');
         var data = await resp.json();
 
         allDestinations = data.destinations || [];

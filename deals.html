@@ -492,7 +492,7 @@
     -------------------------------------------------------- */
     async function init() {
       try {
-        var resp = await fetch('/api/public-data');
+        var resp = await fetch('/api/page-data?need=deals');
         var data = await resp.json();
         deals = data.deals || [];
 

@@ -6,8 +6,8 @@ const connectDB = require('./backend/config/db');
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB (cached for serverless)
+const dbReady = connectDB();
 
 // Middleware
 app.use(cors());
@@ -44,17 +44,43 @@ app.use('/developer', express.static(path.join(__dirname, 'developer')));
 // Combined public data endpoint — single request instead of 6 + site settings
 app.get('/api/public-data', async (req, res) => {
   try {
+    await dbReady;
     const SiteSettings = require('./backend/models/SiteSettings');
     const [destinations, reviews, deals, videos, gallery, team, settings] = await Promise.all([
-      require('./backend/models/Destination').find().sort({ id: 1 }),
-      require('./backend/models/Review').find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] }).sort({ createdAt: -1 }),
-      require('./backend/models/Deal').find().sort({ createdAt: -1 }),
-      require('./backend/models/Video').find().sort({ sortOrder: 1 }),
-      require('./backend/models/GalleryImage').find().sort({ sortOrder: 1 }),
-      require('./backend/models/TeamMember').find().sort({ sortOrder: 1 }),
+      require('./backend/models/Destination').find().sort({ id: 1 }).lean(),
+      require('./backend/models/Review').find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] }).sort({ createdAt: -1 }).lean(),
+      require('./backend/models/Deal').find().sort({ createdAt: -1 }).lean(),
+      require('./backend/models/Video').find().sort({ sortOrder: 1 }).lean(),
+      require('./backend/models/GalleryImage').find().sort({ sortOrder: 1 }).lean(),
+      require('./backend/models/TeamMember').find().sort({ sortOrder: 1 }).lean(),
       SiteSettings.getSettings()
     ]);
     res.json({ destinations, reviews, deals, videos, gallery, team, settings });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load data' });
+  }
+});
+
+// Lightweight endpoint — only settings + specific collections (faster for subpages)
+app.get('/api/page-data', async (req, res) => {
+  try {
+    await dbReady;
+    const SiteSettings = require('./backend/models/SiteSettings');
+    const need = (req.query.need || '').split(',').filter(Boolean);
+    const queries = { settings: SiteSettings.getSettings() };
+
+    if (need.includes('destinations')) queries.destinations = require('./backend/models/Destination').find().sort({ id: 1 }).lean();
+    if (need.includes('reviews')) queries.reviews = require('./backend/models/Review').find({ $or: [{ status: 'approved' }, { status: { $exists: false } }] }).sort({ createdAt: -1 }).lean();
+    if (need.includes('deals')) queries.deals = require('./backend/models/Deal').find().sort({ createdAt: -1 }).lean();
+    if (need.includes('videos')) queries.videos = require('./backend/models/Video').find().sort({ sortOrder: 1 }).lean();
+    if (need.includes('gallery')) queries.gallery = require('./backend/models/GalleryImage').find().sort({ sortOrder: 1 }).lean();
+    if (need.includes('team')) queries.team = require('./backend/models/TeamMember').find().sort({ sortOrder: 1 }).lean();
+
+    const keys = Object.keys(queries);
+    const values = await Promise.all(keys.map(k => queries[k]));
+    const result = {};
+    keys.forEach((k, i) => { result[k] = values[i]; });
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load data' });
   }

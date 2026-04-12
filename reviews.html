@@ -718,7 +718,7 @@
         // Fetch reviews and public data in parallel
         var results = await Promise.all([
           fetch('/api/reviews').then(function(r) { return r.json(); }),
-          fetch('/api/public-data').then(function(r) { return r.json(); })
+          fetch('/api/page-data?need=destinations').then(function(r) { return r.json(); })
         ]);
 
         allReviews = results[0] || [];

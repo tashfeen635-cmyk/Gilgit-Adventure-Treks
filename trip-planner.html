@@ -689,7 +689,7 @@
        INIT — Fetch data from API, apply settings, render
     -------------------------------------------------------- */
     function init() {
-      fetch('/api/public-data')
+      fetch('/api/page-data?need=destinations')
         .then(function(r) { return r.json(); })
         .then(function(data) {
           destinations = data.destinations || [];

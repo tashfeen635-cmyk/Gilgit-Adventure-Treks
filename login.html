@@ -211,7 +211,7 @@
     });
 
     // Dynamic branding from site settings
-    fetch('/api/public-data').then(r => r.json()).then(d => {
+    fetch('/api/page-data?need=').then(r => r.json()).then(d => {
       if (d.settings && d.settings.branding) {
         var b = d.settings.branding;
         if (b.logoUrl) document.querySelector('.logo-area img').src = b.logoUrl;

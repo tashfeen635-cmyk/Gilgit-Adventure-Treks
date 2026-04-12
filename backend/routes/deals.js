@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 // GET /api/deals (public)
 router.get('/', async (req, res) => {
   try {
-    const deals = await Deal.find().sort({ createdAt: -1 });
+    const deals = await Deal.find().sort({ createdAt: -1 }).lean();
     res.json(deals);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });

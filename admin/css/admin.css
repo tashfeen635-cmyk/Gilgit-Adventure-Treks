@@ -365,6 +365,9 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .badge-confirmed { background: #dcfce7; color: #166534; }
 .badge-cancelled { background: #fef2f2; color: #991b1b; }
 .badge-completed { background: #dbeafe; color: #1e40af; }
+.badge-unread { background: #fef3c7; color: #92400e; }
+.badge-read { background: #dbeafe; color: #1e40af; }
+.badge-replied { background: #dcfce7; color: #166534; }
 
 .status-badge {
   display: inline-block;

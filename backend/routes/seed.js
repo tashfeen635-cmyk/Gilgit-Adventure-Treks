@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const connectDB = require('../config/db');
 const Destination = require('../models/Destination');
 const Review = require('../models/Review');
 const Deal = require('../models/Deal');
@@ -52,6 +53,9 @@ const teamMembers = [
 // Seed admin account (safe to run multiple times) - GET and POST
 const seedAdminHandler = async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ username: 'admin' });
 
@@ -88,6 +92,9 @@ router.post('/seed-admin', seedAdminHandler);
 // Reset admin password (useful if password gets corrupted)
 router.get('/reset-admin-password', async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     const admin = await Admin.findOne({ username: 'admin' });
     if (!admin) {
       return res.json({ error: 'Admin account not found. Run /api/seed-admin first' });
@@ -112,6 +119,9 @@ router.get('/reset-admin-password', async (req, res) => {
 // Reset loading screen to default (fix corrupted loading screen text)
 router.get('/reset-loading-screen', async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     const SiteSettings = require('../models/SiteSettings');
     const settings = await SiteSettings.getSettings();
 
@@ -141,6 +151,9 @@ router.get('/reset-loading-screen', async (req, res) => {
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     // Check if already seeded
     const videoCount = await Video.countDocuments();
     const galleryCount = await GalleryImage.countDocuments();

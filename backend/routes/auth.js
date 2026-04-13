@@ -41,17 +41,24 @@ router.post('/login', async (req, res) => {
 // GET /api/auth/me
 router.get('/me', auth, async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     const admin = await Admin.findById(req.admin.id).select('-password');
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
     res.json(admin);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get admin error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // PUT /api/auth/profile — change username and/or password
 router.put('/profile', auth, async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     const { currentPassword, newUsername, newPassword } = req.body;
 
     if (!currentPassword) {

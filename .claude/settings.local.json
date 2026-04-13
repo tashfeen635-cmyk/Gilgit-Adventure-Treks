@@ -26,7 +26,8 @@
       "Bash(taskkill:*)",
       "Bash(cmd /c \"taskkill /F /IM node.exe\")",
       "Bash(netstat:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npm start)"
     ]
   }
 }

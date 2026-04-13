@@ -48,8 +48,6 @@ function editMember(id) {
   document.getElementById('tRole').value = m.role;
   document.getElementById('tBio').value = m.bio || '';
   document.getElementById('tImage').value = m.image;
-  document.getElementById('tFacebook').value = m.facebook || '';
-  document.getElementById('tInstagram').value = m.instagram || '';
   document.getElementById('tOrder').value = m.sortOrder || 0;
   openModal('teamModal');
 }
@@ -61,8 +59,6 @@ async function saveMember() {
     role: document.getElementById('tRole').value.trim(),
     bio: document.getElementById('tBio').value.trim(),
     image: document.getElementById('tImage').value.trim(),
-    facebook: document.getElementById('tFacebook').value.trim(),
-    instagram: document.getElementById('tInstagram').value.trim(),
     sortOrder: parseInt(document.getElementById('tOrder').value) || 0
   };
 

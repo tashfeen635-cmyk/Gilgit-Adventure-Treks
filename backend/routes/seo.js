@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const connectDB = require('../config/db');
 
 // ─── robots.txt ───
 router.get('/robots.txt', async (req, res) => {
   try {
+    await connectDB();
     const SiteSettings = require('../models/SiteSettings');
     const settings = await SiteSettings.getSettings();
     const baseUrl = (settings.seo && settings.seo.canonicalUrl) || `https://${req.hostname}`;
@@ -49,6 +51,7 @@ Allow: /images/
 // ─── Sitemap Index ───
 router.get('/sitemap-index.xml', async (req, res) => {
   try {
+    await connectDB();
     const SiteSettings = require('../models/SiteSettings');
     const settings = await SiteSettings.getSettings();
     const baseUrl = (settings.seo && settings.seo.canonicalUrl) || `https://${req.hostname}`;

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const connectDB = require('../config/db');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Review = require('../models/Review');
@@ -8,6 +9,7 @@ const userAuth = require('../middleware/userAuth');
 // POST /api/users/register
 router.post('/register', async (req, res) => {
   try {
+    await connectDB();
     const { name, email, password, phone, avatar } = req.body;
 
     if (!name || !email || !password) {
@@ -31,6 +33,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ token, name: user.name, email: user.email, avatar: user.avatar });
   } catch (err) {
+    console.error('User register error:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -38,6 +41,7 @@ router.post('/register', async (req, res) => {
 // POST /api/users/login
 router.post('/login', async (req, res) => {
   try {
+    await connectDB();
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -62,24 +66,28 @@ router.post('/login', async (req, res) => {
 
     res.json({ token, name: user.name, email: user.email, avatar: user.avatar || '' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('User login error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // GET /api/users/me
 router.get('/me', userAuth, async (req, res) => {
   try {
+    await connectDB();
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get user error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // PUT /api/users/me
 router.put('/me', userAuth, async (req, res) => {
   try {
+    await connectDB();
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -100,6 +108,7 @@ router.put('/me', userAuth, async (req, res) => {
     delete safeUser.password;
     res.json(safeUser);
   } catch (err) {
+    console.error('Update user error:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -107,20 +116,24 @@ router.put('/me', userAuth, async (req, res) => {
 // GET /api/users/my-bookings
 router.get('/my-bookings', userAuth, async (req, res) => {
   try {
+    await connectDB();
     const bookings = await Booking.find({ userId: req.user.id }).sort({ createdAt: -1 });
     res.json(bookings);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get user bookings error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // GET /api/users/my-reviews
 router.get('/my-reviews', userAuth, async (req, res) => {
   try {
+    await connectDB();
     const reviews = await Review.find({ userId: req.user.id }).sort({ createdAt: -1 });
     res.json(reviews);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get user reviews error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

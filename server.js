@@ -179,6 +179,9 @@ app.use('/api/team', require('./backend/routes/team'));
 // Chat AI route
 app.use('/api/chat', require('./backend/routes/chat'));
 
+// Seed route (for initial database setup on Vercel)
+app.use('/api', require('./backend/routes/seed'));
+
 // 404 handler — SEO-friendly error page
 app.use((req, res) => {
   res.status(404).send(`<!DOCTYPE html>

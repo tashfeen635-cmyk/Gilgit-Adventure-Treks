@@ -556,26 +556,31 @@
      VIDEO SHOWCASE
   -------------------------------------------------------- */
 
-  // Preload videos when section is approaching (before user reaches it)
-  // Only preload actual videos, skip cards with thumbnail images
+  // Preload thumbnails/videos when section is approaching (before user reaches it)
   const videoSectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Preload only video preview cards (cards without thumbnails)
+        // Preload all video cards (thumbnails + videos)
         $$('.video-card').forEach(card => {
+          // Preload thumbnail images
+          const img = card.querySelector('img');
+          if (img && img.loading === 'lazy') {
+            img.loading = 'eager'; // Force immediate loading
+          }
+
+          // Preload video previews (for cards without thumbnails)
           const vid = card.querySelector('video');
           const src = card.dataset.video;
-          // Only preload if card uses video (not thumbnail image)
           if (vid && src && !vid.src) {
             vid.src = src;
             vid.load(); // Preload video metadata and first frame
           }
         });
-        // Stop observing once videos are preloaded
+        // Stop observing once preloaded
         videoSectionObserver.unobserve(entry.target);
       }
     });
-  }, { rootMargin: '200px' }); // Trigger 200px before section enters viewport
+  }, { rootMargin: '300px' }); // Trigger 300px before section enters viewport (earlier for better preloading)
 
   // Autoplay muted previews on cards when visible
   const videoObserver = new IntersectionObserver((entries) => {

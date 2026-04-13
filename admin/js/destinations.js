@@ -37,7 +37,7 @@ function renderTable() {
 }
 
 function showAddModal() {
-  document.getElementById('modalTitle').textContent = 'Add Destination';
+  document.getElementById('modalTitle').textContent = 'Add Service';
   document.getElementById('destForm').reset();
   document.getElementById('editId').value = '';
   openModal('destModal');
@@ -46,7 +46,7 @@ function showAddModal() {
 function editDest(id) {
   const d = allDestinations.find(x => x.id === id);
   if (!d) return;
-  document.getElementById('modalTitle').textContent = 'Edit Destination';
+  document.getElementById('modalTitle').textContent = 'Edit Service';
   document.getElementById('editId').value = d.id;
   document.getElementById('dId').value = d.id;
   document.getElementById('dName').value = d.name;

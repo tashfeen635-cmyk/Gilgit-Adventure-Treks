@@ -921,13 +921,13 @@
       if (nlNote && n.subscriberNote) nlNote.textContent = n.subscriberNote;
     }
 
-    // Loading screen
-    if (s.loadingScreen) {
-      const lt = $('.loading-title');
-      const ltxt = $('.loading-text');
-      if (lt && s.loadingScreen.title) lt.textContent = s.loadingScreen.title;
-      if (ltxt && s.loadingScreen.text) ltxt.textContent = s.loadingScreen.text;
-    }
+    // Loading screen - DISABLED (always use default from index.html)
+    // if (s.loadingScreen) {
+    //   const lt = $('.loading-title');
+    //   const ltxt = $('.loading-text');
+    //   if (lt && s.loadingScreen.title) lt.textContent = s.loadingScreen.title;
+    //   if (ltxt && s.loadingScreen.text) ltxt.textContent = s.loadingScreen.text;
+    // }
 
     // SEO: Update meta tags from settings
     if (s.seo) {

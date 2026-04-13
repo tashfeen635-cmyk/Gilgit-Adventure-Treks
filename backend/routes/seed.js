@@ -109,6 +109,35 @@ router.get('/reset-admin-password', async (req, res) => {
   }
 });
 
+// Reset loading screen to default (fix corrupted loading screen text)
+router.get('/reset-loading-screen', async (req, res) => {
+  try {
+    const SiteSettings = require('../models/SiteSettings');
+    const settings = await SiteSettings.getSettings();
+
+    if (!settings) {
+      return res.json({ error: 'Site settings not found' });
+    }
+
+    // Reset loading screen to defaults
+    settings.loadingScreen = {
+      title: 'Gilgit Adventure Treks',
+      text: 'Preparing your mountain adventure...'
+    };
+
+    await settings.save();
+
+    res.json({
+      success: true,
+      message: 'Loading screen reset to default',
+      loadingScreen: settings.loadingScreen
+    });
+  } catch (err) {
+    console.error('Loading screen reset error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {

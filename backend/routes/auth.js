@@ -1,11 +1,15 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const connectDB = require('../config/db');
 const Admin = require('../models/Admin');
 const auth = require('../middleware/auth');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
+    // CRITICAL: Wait for DB connection first (Vercel serverless fix)
+    await connectDB();
+
     const { username, password } = req.body;
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password are required' });

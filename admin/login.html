@@ -68,17 +68,26 @@
         const data = await res.json();
 
         if (!res.ok) {
-          errorEl.textContent = data.message || 'Login failed';
+          // Show detailed error message
+          const errorMsg = data.message || data.error || 'Login failed';
+          errorEl.textContent = errorMsg;
           errorEl.style.display = 'block';
+          console.error('Login error:', data);
           return;
         }
 
+        // Clear any old tokens first
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_username');
+
+        // Set new tokens
         localStorage.setItem('admin_token', data.token);
         localStorage.setItem('admin_username', data.username);
         window.location.href = '/admin/index.html';
       } catch (err) {
-        errorEl.textContent = 'Network error. Is the server running?';
+        errorEl.textContent = 'Network error: ' + err.message;
         errorEl.style.display = 'block';
+        console.error('Login network error:', err);
       }
     });
   </script>

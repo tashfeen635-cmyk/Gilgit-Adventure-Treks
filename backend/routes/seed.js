@@ -101,6 +101,54 @@ router.get('/check-env', async (req, res) => {
   }
 });
 
+// Test login endpoint with detailed error reporting
+router.post('/test-login', async (req, res) => {
+  try {
+    const jwt = require('jsonwebtoken');
+    const { username, password } = req.body;
+
+    // Step 1: Check inputs
+    if (!username || !password) {
+      return res.json({ step: 1, error: 'Username and password are required' });
+    }
+
+    // Step 2: Find admin
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res.json({ step: 2, error: 'Admin not found', username });
+    }
+
+    // Step 3: Compare password
+    let isMatch;
+    try {
+      isMatch = await admin.comparePassword(password);
+    } catch (err) {
+      return res.json({ step: 3, error: 'Password comparison failed', message: err.message });
+    }
+
+    if (!isMatch) {
+      return res.json({ step: 3, error: 'Password does not match' });
+    }
+
+    // Step 4: Generate token
+    let token;
+    try {
+      token = jwt.sign(
+        { id: admin._id, username: admin.username },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+    } catch (err) {
+      return res.json({ step: 4, error: 'Token generation failed', message: err.message });
+    }
+
+    // Success
+    res.json({ success: true, token, username: admin.username });
+  } catch (err) {
+    res.json({ step: 0, error: 'Server error', message: err.message, stack: err.stack });
+  }
+});
+
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {

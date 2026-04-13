@@ -85,6 +85,22 @@ const seedAdminHandler = async (req, res) => {
 router.get('/seed-admin', seedAdminHandler);
 router.post('/seed-admin', seedAdminHandler);
 
+// Debug endpoint to check environment variables
+router.get('/check-env', async (req, res) => {
+  try {
+    res.json({
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      hasMongoUri: !!process.env.MONGODB_URI,
+      hasAdminPassword: !!process.env.ADMIN_DEFAULT_PASSWORD,
+      jwtSecretLength: process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 0,
+      nodeEnv: process.env.NODE_ENV || 'not set',
+      adminCount: await Admin.countDocuments()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {

@@ -85,6 +85,30 @@ const seedAdminHandler = async (req, res) => {
 router.get('/seed-admin', seedAdminHandler);
 router.post('/seed-admin', seedAdminHandler);
 
+// Reset admin password (useful if password gets corrupted)
+router.get('/reset-admin-password', async (req, res) => {
+  try {
+    const admin = await Admin.findOne({ username: 'admin' });
+    if (!admin) {
+      return res.json({ error: 'Admin account not found. Run /api/seed-admin first' });
+    }
+
+    // Reset to default password
+    admin.password = process.env.ADMIN_DEFAULT_PASSWORD || 'admin123';
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: 'Admin password reset to default',
+      username: 'admin',
+      password: 'Check ADMIN_DEFAULT_PASSWORD environment variable'
+    });
+  } catch (err) {
+    console.error('Password reset error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {

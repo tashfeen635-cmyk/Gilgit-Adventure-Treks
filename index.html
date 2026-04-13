@@ -213,12 +213,13 @@
     window.__publicDataPromise = fetch('/api/page-data?need=destinations,reviews,deals,team').then(function(r){return r.json()}).then(function(d){
       if(d.settings){
         var s=d.settings;
-        if(s.loadingScreen){
-          var t=document.querySelector('.loading-title');
-          var p=document.querySelector('.loading-text');
-          if(t&&s.loadingScreen.title)t.textContent=s.loadingScreen.title;
-          if(p&&s.loadingScreen.text)p.textContent=s.loadingScreen.text;
-        }
+        // DISABLED: Loading screen text updates (always use default from HTML)
+        // if(s.loadingScreen){
+        //   var t=document.querySelector('.loading-title');
+        //   var p=document.querySelector('.loading-text');
+        //   if(t&&s.loadingScreen.title)t.textContent=s.loadingScreen.title;
+        //   if(p&&s.loadingScreen.text)p.textContent=s.loadingScreen.text;
+        // }
         if(s.branding){
           var logo=document.querySelector('.loading-logo');
           if(logo){

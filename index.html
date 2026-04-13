@@ -454,14 +454,14 @@
           <div class="planner-field">
             <label>Project Type</label>
             <div class="planner-tags" role="group" aria-label="Select project types">
-              <button class="planner-tag active" data-interest="wedding">Wedding</button>
-              <button class="planner-tag" data-interest="corporate">Corporate</button>
-              <button class="planner-tag" data-interest="music">Music Video</button>
-              <button class="planner-tag" data-interest="event">Event</button>
-              <button class="planner-tag" data-interest="documentary">Documentary</button>
-              <button class="planner-tag" data-interest="photography">Photography</button>
-              <button class="planner-tag" data-interest="commercial">Commercial</button>
-              <button class="planner-tag" data-interest="branding">Branding</button>
+              <button type="button" class="planner-tag active" data-interest="wedding">Wedding</button>
+              <button type="button" class="planner-tag" data-interest="corporate">Corporate</button>
+              <button type="button" class="planner-tag" data-interest="music">Music Video</button>
+              <button type="button" class="planner-tag" data-interest="event">Event</button>
+              <button type="button" class="planner-tag" data-interest="documentary">Documentary</button>
+              <button type="button" class="planner-tag" data-interest="photography">Photography</button>
+              <button type="button" class="planner-tag" data-interest="commercial">Commercial</button>
+              <button type="button" class="planner-tag" data-interest="branding">Branding</button>
             </div>
           </div>
           <div class="planner-field">
@@ -473,13 +473,13 @@
               <option value="group">Corporate / Agency</option>
             </select>
           </div>
-          <button class="btn btn-primary planner-generate" id="plannerGenerate">
+          <button type="button" class="btn btn-primary planner-generate" id="plannerGenerate">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-4-4 1.41-1.41L11 14.17l5.59-5.59L18 10l-7 7z" fill="currentColor"/></svg>
             Plan My Project
           </button>
         </div>
         <div class="planner-chat">
-          <div class="chat-messages" id="chatMessages" aria-live="polite" aria-label="AI trek planner conversation">
+          <div class="chat-messages" id="plannerChatMessages" aria-live="polite" aria-label="AI trek planner conversation">
             <div class="chat-message ai">
               <div class="chat-avatar">AI</div>
               <div class="chat-bubble">
@@ -488,8 +488,8 @@
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Ask about our services, pricing, packages..." aria-label="Chat message input">
-            <button class="chat-send-btn" id="chatSendBtn" aria-label="Send message">
+            <input type="text" id="plannerChatInput" placeholder="Ask about our services, pricing, packages..." aria-label="Chat message input">
+            <button class="chat-send-btn" id="plannerChatSendBtn" aria-label="Send message">
               <svg viewBox="0 0 24 24" width="20" height="20"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/></svg>
             </button>
           </div>

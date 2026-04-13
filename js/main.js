@@ -1318,15 +1318,16 @@
 
   function initAIPlanner() {
     const generateBtn = $('#plannerGenerate');
-    const chatSendBtn = $('#chatSendBtn');
-    const chatInput = $('#chatInput');
+    const chatSendBtn = $('#plannerChatSendBtn');
+    const chatInput = $('#plannerChatInput');
     const interestTags = $$('.planner-tag');
 
     if (!generateBtn) return;
 
     // Interest tag selection
     interestTags.forEach(tag => {
-      tag.addEventListener('click', () => {
+      tag.addEventListener('click', (e) => {
+        e.preventDefault();
         tag.classList.toggle('active');
         const interest = tag.dataset.interest;
         if (tag.classList.contains('active')) {
@@ -1420,7 +1421,7 @@
   }
 
   function addChatMessage(type, text) {
-    const chatMessages = $('#chatMessages');
+    const chatMessages = $('#plannerChatMessages');
     if (!chatMessages) return;
 
     const messageDiv = createEl('div', { className: `chat-message ${type}` });

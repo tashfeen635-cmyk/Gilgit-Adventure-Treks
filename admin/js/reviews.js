@@ -77,6 +77,7 @@ function editReview(id) {
 }
 
 async function saveReview() {
+  const saveBtn = document.getElementById('saveReviewBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     name: document.getElementById('rName').value.trim(),
@@ -89,6 +90,9 @@ async function saveReview() {
     status: document.getElementById('rStatus').value
   };
 
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+
   try {
     if (editId) {
       await apiCall('/reviews/' + editId, { method: 'PUT', body: JSON.stringify(body) });
@@ -99,6 +103,9 @@ async function saveReview() {
     loadReviews();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

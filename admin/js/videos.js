@@ -52,6 +52,7 @@ function editVideo(id) {
 }
 
 async function saveVideo() {
+  const saveBtn = document.getElementById('saveVideoBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     title: document.getElementById('vTitle').value.trim(),
@@ -60,6 +61,9 @@ async function saveVideo() {
     sortOrder: parseInt(document.getElementById('vOrder').value) || 0,
     videoUrl: document.getElementById('vUrl').value.trim()
   };
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
 
   try {
     if (editId) {
@@ -71,6 +75,9 @@ async function saveVideo() {
     loadVideos();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

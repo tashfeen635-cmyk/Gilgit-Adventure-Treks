@@ -52,6 +52,7 @@ function editImage(id) {
 }
 
 async function saveImage() {
+  const saveBtn = document.getElementById('saveImageBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     imageUrl: document.getElementById('gUrl').value.trim(),
@@ -59,6 +60,9 @@ async function saveImage() {
     sortOrder: parseInt(document.getElementById('gOrder').value) || 0,
     hidden: document.getElementById('gHidden').value === 'true'
   };
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
 
   try {
     if (editId) {
@@ -70,6 +74,9 @@ async function saveImage() {
     loadImages();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

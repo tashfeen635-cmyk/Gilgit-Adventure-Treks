@@ -65,6 +65,7 @@ function editDest(id) {
 }
 
 async function saveDest() {
+  const saveBtn = document.getElementById('saveBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     id: parseInt(document.getElementById('dId').value),
@@ -82,6 +83,9 @@ async function saveDest() {
     mapY: parseInt(document.getElementById('dMapY').value) || 0
   };
 
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+
   try {
     if (editId) {
       await apiCall('/destinations/' + editId, { method: 'PUT', body: JSON.stringify(body) });
@@ -92,6 +96,9 @@ async function saveDest() {
     loadDestinations();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

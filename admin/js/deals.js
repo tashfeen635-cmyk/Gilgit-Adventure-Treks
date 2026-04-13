@@ -65,6 +65,7 @@ function editDeal(id) {
 }
 
 async function saveDeal() {
+  const saveBtn = document.getElementById('saveDealBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     name: document.getElementById('dlName').value.trim(),
@@ -77,6 +78,9 @@ async function saveDeal() {
     expiresAt: new Date(document.getElementById('dlExpires').value).toISOString()
   };
 
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+
   try {
     if (editId) {
       await apiCall('/deals/' + editId, { method: 'PUT', body: JSON.stringify(body) });
@@ -87,6 +91,9 @@ async function saveDeal() {
     loadDeals();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

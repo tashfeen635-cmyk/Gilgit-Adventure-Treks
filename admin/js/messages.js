@@ -70,8 +70,13 @@ function viewMsg(id) {
 }
 
 async function updateStatus() {
+  const updateBtn = document.getElementById('updateMsgStatusBtn');
   if (!currentMsgId) return;
   const status = document.getElementById('modalStatus').value;
+
+  updateBtn.disabled = true;
+  updateBtn.textContent = 'Saving...';
+
   try {
     await apiCall('/contact/' + currentMsgId, {
       method: 'PUT',
@@ -83,6 +88,9 @@ async function updateStatus() {
     closeModal('viewModal');
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    updateBtn.disabled = false;
+    updateBtn.textContent = 'Save Status';
   }
 }
 

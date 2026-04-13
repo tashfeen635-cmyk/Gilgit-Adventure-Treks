@@ -52,14 +52,22 @@ function editStatus(id, currentStatus) {
 }
 
 async function updateStatus() {
+  const updateBtn = document.getElementById('updateStatusBtn');
   const id = document.getElementById('editBookingId').value;
   const status = document.getElementById('bookingStatus').value;
+
+  updateBtn.disabled = true;
+  updateBtn.textContent = 'Updating...';
+
   try {
     await apiCall('/bookings/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
     closeModal('statusModal');
     loadBookings();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    updateBtn.disabled = false;
+    updateBtn.textContent = 'Update';
   }
 }
 

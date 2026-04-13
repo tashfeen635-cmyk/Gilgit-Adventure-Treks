@@ -47,7 +47,7 @@
               <button type="button" class="password-toggle" onclick="togglePassword(this)">&#128065;</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Update Username</button>
+          <button type="submit" id="updateUsernameBtn" class="btn btn-primary">Update Username</button>
         </form>
       </div>
     </div>
@@ -79,7 +79,7 @@
               <button type="button" class="password-toggle" onclick="togglePassword(this)">&#128065;</button>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">Update Password</button>
+          <button type="submit" id="updatePasswordBtn" class="btn btn-primary">Update Password</button>
         </form>
       </div>
     </div>
@@ -113,9 +113,13 @@
     // Change Username
     document.getElementById('usernameForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const updateBtn = document.getElementById('updateUsernameBtn');
       const msgEl = document.getElementById('usernameMsg');
       const newUsername = document.getElementById('newUsername').value.trim();
       const currentPassword = document.getElementById('usernameCurrentPass').value;
+
+      updateBtn.disabled = true;
+      updateBtn.textContent = 'Updating...';
 
       try {
         const data = await apiCall('/auth/profile', {
@@ -129,12 +133,16 @@
         showMsg(msgEl, 'Username updated successfully!', false);
       } catch (err) {
         showMsg(msgEl, err.message, true);
+      } finally {
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Update Username';
       }
     });
 
     // Change Password
     document.getElementById('passwordForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const updateBtn = document.getElementById('updatePasswordBtn');
       const msgEl = document.getElementById('passwordMsg');
       const currentPassword = document.getElementById('passwordCurrentPass').value;
       const newPassword = document.getElementById('newPassword').value;
@@ -144,6 +152,9 @@
         showMsg(msgEl, 'New passwords do not match', true);
         return;
       }
+
+      updateBtn.disabled = true;
+      updateBtn.textContent = 'Updating...';
 
       try {
         const data = await apiCall('/auth/profile', {
@@ -157,6 +168,9 @@
         showMsg(msgEl, 'Password updated successfully!', false);
       } catch (err) {
         showMsg(msgEl, err.message, true);
+      } finally {
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Update Password';
       }
     });
   </script>

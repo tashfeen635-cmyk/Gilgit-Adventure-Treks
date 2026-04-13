@@ -53,6 +53,7 @@ function editMember(id) {
 }
 
 async function saveMember() {
+  const saveBtn = document.getElementById('saveMemberBtn');
   const editId = document.getElementById('editId').value;
   const body = {
     name: document.getElementById('tName').value.trim(),
@@ -61,6 +62,10 @@ async function saveMember() {
     image: document.getElementById('tImage').value.trim(),
     sortOrder: parseInt(document.getElementById('tOrder').value) || 0
   };
+
+  // Show loading state
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
 
   try {
     if (editId) {
@@ -72,6 +77,10 @@ async function saveMember() {
     loadMembers();
   } catch (err) {
     alert('Error: ' + err.message);
+  } finally {
+    // Restore button state
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
   }
 }
 

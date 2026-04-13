@@ -1311,6 +1311,130 @@
     }
   }
 
+  /* --------------------------------------------------------
+     AI TRIP/PROJECT PLANNER
+  -------------------------------------------------------- */
+  let selectedInterests = ['wedding'];
+
+  function initAIPlanner() {
+    const generateBtn = $('#plannerGenerate');
+    const chatSendBtn = $('#chatSendBtn');
+    const chatInput = $('#chatInput');
+    const interestTags = $$('.planner-tag');
+
+    if (!generateBtn) return;
+
+    // Interest tag selection
+    interestTags.forEach(tag => {
+      tag.addEventListener('click', () => {
+        tag.classList.toggle('active');
+        const interest = tag.dataset.interest;
+        if (tag.classList.contains('active')) {
+          if (!selectedInterests.includes(interest)) {
+            selectedInterests.push(interest);
+          }
+        } else {
+          selectedInterests = selectedInterests.filter(i => i !== interest);
+        }
+      });
+    });
+
+    // Generate plan button
+    generateBtn.addEventListener('click', async () => {
+      const budget = $('#plannerBudget')?.value || 'mid';
+      const duration = $('#plannerDuration')?.value || 'week';
+      const style = $('#plannerStyle')?.value || 'couple';
+
+      if (selectedInterests.length === 0) {
+        addChatMessage('ai', 'Please select at least one project type to generate a plan.');
+        return;
+      }
+
+      // Show loading message
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = '<span style="opacity:0.7">Generating...</span>';
+      addChatMessage('user', `Generate a ${budget} budget ${duration} project plan for: ${selectedInterests.join(', ')}`);
+
+      try {
+        const response = await fetch('/api/ai/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            budget,
+            duration,
+            interests: selectedInterests,
+            style
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          addChatMessage('ai', data.plan);
+        } else {
+          addChatMessage('ai', 'Sorry, I couldn\'t generate a plan right now. Please try again.');
+        }
+      } catch (err) {
+        console.error('Plan generation error:', err);
+        addChatMessage('ai', 'Sorry, there was an error. Please try again.');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-4-4 1.41-1.41L11 14.17l5.59-5.59L18 10l-7 7z" fill="currentColor"/></svg> Plan My Project';
+      }
+    });
+
+    // Chat send button
+    if (chatSendBtn && chatInput) {
+      const sendMessage = async () => {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        addChatMessage('user', message);
+        chatInput.value = '';
+
+        try {
+          const response = await fetch('/api/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            addChatMessage('ai', data.reply);
+          } else {
+            addChatMessage('ai', 'Sorry, I couldn\'t respond right now. Please try again.');
+          }
+        } catch (err) {
+          console.error('Chat error:', err);
+          addChatMessage('ai', 'Sorry, there was an error. Please try again.');
+        }
+      };
+
+      chatSendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+    }
+  }
+
+  function addChatMessage(type, text) {
+    const chatMessages = $('#chatMessages');
+    if (!chatMessages) return;
+
+    const messageDiv = createEl('div', { className: `chat-message ${type}` });
+    messageDiv.innerHTML = `
+      <div class="chat-avatar">${type === 'ai' ? 'AI' : 'You'}</div>
+      <div class="chat-bubble">
+        <p>${text.replace(/\n/g, '<br>')}</p>
+      </div>
+    `;
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
   async function init() {
     try {
       // Reuse pre-fetched data (now includes videos & gallery for background loading)
@@ -1340,6 +1464,7 @@
     renderVideos();
     renderGallery();
     initBookingWizard();
+    initAIPlanner();
     updateNavAuth();
     injectDestinationSchema();
 

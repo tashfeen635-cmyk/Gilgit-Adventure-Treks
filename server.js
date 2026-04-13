@@ -53,6 +53,7 @@ app.use('/api/bookings', submitLimiter);
 app.use('/api/contact', submitLimiter);
 app.use('/api/subscribers', submitLimiter);
 app.use('/api/chat', submitLimiter);
+app.use('/api/ai', submitLimiter);
 app.use('/api', apiLimiter);
 
 // SEO & performance headers
@@ -184,6 +185,9 @@ app.use('/api/team', require('./backend/routes/team'));
 
 // Chat AI route
 app.use('/api/chat', require('./backend/routes/chat'));
+
+// AI Trip/Project Planner route
+app.use('/api/ai', require('./backend/routes/ai'));
 
 // Seed route (for initial database setup on Vercel)
 app.use('/api', require('./backend/routes/seed'));

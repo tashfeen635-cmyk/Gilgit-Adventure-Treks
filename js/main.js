@@ -1024,13 +1024,15 @@
 
   async function init() {
     try {
-      // Reuse pre-fetched data (lightweight: destinations, reviews, deals, team + settings)
-      const data = (window.__publicDataPromise && await window.__publicDataPromise) || await fetch('/api/page-data?need=destinations,reviews,deals,team').then(r => r.json());
+      // Reuse pre-fetched data (now includes videos & gallery for background loading)
+      const data = (window.__publicDataPromise && await window.__publicDataPromise) || await fetch('/api/page-data?need=destinations,reviews,deals,team,videos,gallery').then(r => r.json());
       delete window.__publicDataPromise;
       destinations = data.destinations || [];
       reviews = data.reviews || [];
       deals = data.deals || [];
       teamMembers = data.team || [];
+      videos = data.videos || [];
+      galleryImages = data.gallery || [];
 
       // Apply site settings before rendering
       if (data.settings) {
@@ -1040,12 +1042,14 @@
       console.warn('API not available, site will show empty sections:', err.message);
     }
 
-    // Render above-fold + critical sections immediately
+    // Render all sections immediately (videos & gallery load in background during page load)
     renderTopDestinations();
     renderMapList();
     renderReviews();
     renderDeals();
     renderTeam();
+    renderVideos();
+    renderGallery();
     updateNavAuth();
     injectDestinationSchema();
 
@@ -1059,17 +1063,6 @@
     if (loader) {
       loader.classList.add('hidden');
       setTimeout(() => loader.remove(), 600);
-    }
-
-    // Lazy-load gallery & videos (not needed for initial view)
-    try {
-      const extra = await fetch('/api/page-data?need=gallery,videos').then(r => r.json());
-      videos = extra.videos || [];
-      galleryImages = extra.gallery || [];
-      renderVideos();
-      renderGallery();
-    } catch (err) {
-      console.warn('Failed to load gallery/videos:', err.message);
     }
   }
 

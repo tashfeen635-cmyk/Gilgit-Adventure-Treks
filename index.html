@@ -209,8 +209,8 @@
     </div>
   </div>
   <script>
-    // Early fetch: update loading screen + store promise for main.js to reuse
-    window.__publicDataPromise = fetch('/api/page-data?need=destinations,reviews,deals,team').then(function(r){return r.json()}).then(function(d){
+    // Early fetch: update loading screen + store promise for main.js to reuse (includes videos & gallery for background loading)
+    window.__publicDataPromise = fetch('/api/page-data?need=destinations,reviews,deals,team,videos,gallery').then(function(r){return r.json()}).then(function(d){
       if(d.settings){
         var s=d.settings;
         // DISABLED: Loading screen text updates (always use default from HTML)

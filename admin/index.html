@@ -68,30 +68,34 @@
 
     (async () => {
       try {
+        // Load stats with better error handling
+        const loadStat = async (endpoint, elementId) => {
+          try {
+            const data = await apiCall(endpoint);
+            document.getElementById(elementId).textContent = data.length || 0;
+            return data;
+          } catch (err) {
+            console.error(`Failed to load ${endpoint}:`, err.message);
+            document.getElementById(elementId).textContent = '—';
+            return [];
+          }
+        };
+
         const [destinations, bookings, reviews, deals, subscribers, messages, videos, gallery, team] = await Promise.all([
-          apiCall('/destinations'),
-          apiCall('/bookings'),
-          apiCall('/reviews'),
-          apiCall('/deals'),
-          apiCall('/subscribers'),
-          apiCall('/contact'),
-          apiCall('/videos'),
-          apiCall('/gallery'),
-          apiCall('/team')
+          loadStat('/destinations', 'statDest'),
+          loadStat('/bookings', 'statBook'),
+          loadStat('/reviews/all', 'statReview'), // FIX: Use /reviews/all for admin
+          loadStat('/deals', 'statDeal'),
+          loadStat('/subscribers', 'statSub'),
+          loadStat('/contact', 'statMsg'),
+          loadStat('/videos', 'statVideo'),
+          loadStat('/gallery', 'statGallery'),
+          loadStat('/team', 'statTeam')
         ]);
 
-        document.getElementById('statDest').textContent = destinations.length;
-        document.getElementById('statBook').textContent = bookings.length;
-        document.getElementById('statReview').textContent = reviews.length;
-        document.getElementById('statDeal').textContent = deals.length;
-        document.getElementById('statSub').textContent = subscribers.length;
-        document.getElementById('statMsg').textContent = messages.length;
-        document.getElementById('statVideo').textContent = videos.length;
-        document.getElementById('statGallery').textContent = gallery.length;
-        document.getElementById('statTeam').textContent = team.length;
-
+        // Recent bookings
         const tbody = document.getElementById('recentBookings');
-        if (bookings.length === 0) {
+        if (!bookings || bookings.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;">No bookings yet</td></tr>';
         } else {
           tbody.innerHTML = bookings.slice(0, 5).map(b => `
@@ -105,6 +109,7 @@
         }
       } catch (err) {
         console.error('Dashboard load error:', err);
+        alert('Failed to load dashboard. Please check console for details.');
       }
     })();
   </script>

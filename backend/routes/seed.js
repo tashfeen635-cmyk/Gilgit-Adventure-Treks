@@ -49,6 +49,39 @@ const teamMembers = [
   { name: 'Zara Batool', role: 'Community & Marketing Lead', bio: 'Skardu local passionate about responsible tourism. Connects travelers with authentic cultural experiences across Baltistan.', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80', facebook: '#', instagram: '#', sortOrder: 4 }
 ];
 
+// Seed admin account (safe to run multiple times)
+router.post('/seed-admin', async (req, res) => {
+  try {
+    // Check if admin already exists
+    const existingAdmin = await Admin.findOne({ username: 'admin' });
+
+    if (existingAdmin) {
+      return res.json({
+        message: 'Admin account already exists',
+        username: 'admin'
+      });
+    }
+
+    // Create default admin
+    const admin = new Admin({
+      username: 'admin',
+      password: process.env.ADMIN_DEFAULT_PASSWORD || 'admin123'
+    });
+
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: 'Admin account created successfully',
+      username: 'admin',
+      password: 'Use ADMIN_DEFAULT_PASSWORD from environment variables'
+    });
+  } catch (err) {
+    console.error('Admin seed error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {
   try {

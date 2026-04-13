@@ -25,7 +25,8 @@
       "Bash(timeout:*)",
       "Bash(taskkill:*)",
       "Bash(cmd /c \"taskkill /F /IM node.exe\")",
-      "Bash(netstat:*)"
+      "Bash(netstat:*)",
+      "Bash(git rm:*)"
     ]
   }
 }

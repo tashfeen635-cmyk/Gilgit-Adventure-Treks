@@ -556,6 +556,25 @@
      VIDEO SHOWCASE
   -------------------------------------------------------- */
 
+  // Preload videos when section is approaching (before user reaches it)
+  const videoSectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Preload all video thumbnails when section is near
+        $$('.video-card').forEach(card => {
+          const vid = card.querySelector('video');
+          const src = card.dataset.video;
+          if (vid && src && !vid.src) {
+            vid.src = src;
+            vid.load(); // Preload video metadata and first frame
+          }
+        });
+        // Stop observing once videos are preloaded
+        videoSectionObserver.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '200px' }); // Trigger 200px before section enters viewport
+
   // Autoplay muted previews on cards when visible
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -706,6 +725,12 @@
 
     // Re-observe video cards for autoplay
     $$('.video-card', videoGrid).forEach(card => videoObserver.observe(card));
+
+    // Observe videos section for preloading before user reaches it
+    const videosSection = $('#videos');
+    if (videosSection) {
+      videoSectionObserver.observe(videosSection);
+    }
   }
 
   /* --------------------------------------------------------

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const connectDB = require('../config/db');
 const Subscriber = require('../models/Subscriber');
 const auth = require('../middleware/auth');
 const { validate, schemas } = require('../middleware/validate');
@@ -7,6 +8,7 @@ const { sendSubscriberConfirmation } = require('../utils/mailer');
 // POST /api/subscribers (public)
 router.post('/', validate(schemas.subscriber), async (req, res) => {
   try {
+    await connectDB();
     const { email, name } = req.body;
     if (!email) return res.status(400).json({ message: 'Email is required' });
 
@@ -37,6 +39,7 @@ router.post('/', validate(schemas.subscriber), async (req, res) => {
 
     res.status(201).json({ ...subscriber.toObject(), emailSent });
   } catch (err) {
+    console.error('Subscribe error:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -44,21 +47,25 @@ router.post('/', validate(schemas.subscriber), async (req, res) => {
 // GET /api/subscribers (auth)
 router.get('/', auth, async (req, res) => {
   try {
+    await connectDB();
     const subscribers = await Subscriber.find().sort({ createdAt: -1 });
     res.json(subscribers);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get subscribers error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
 // DELETE /api/subscribers/:id (auth)
 router.delete('/:id', auth, async (req, res) => {
   try {
+    await connectDB();
     const subscriber = await Subscriber.findByIdAndDelete(req.params.id);
     if (!subscriber) return res.status(404).json({ message: 'Subscriber not found' });
     res.json({ message: 'Subscriber deleted' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Delete subscriber error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

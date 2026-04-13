@@ -140,7 +140,7 @@ function buildBookingConfirmationHtml(booking) {
               </div>
               <h2 style="margin:0 0 8px;color:#1a2332;font-size:22px;text-align:center;">Booking Confirmed!</h2>
               <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#3a4658;text-align:center;">
-                Thank you, <strong>${escapeHtml(name)}</strong>! Your adventure has been booked successfully.
+                Thank you, <strong>${escapeHtml(name)}</strong>! Your booking has been confirmed successfully.
               </p>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:8px;padding:20px;margin-bottom:24px;">
                 <tr>
@@ -148,7 +148,7 @@ function buildBookingConfirmationHtml(booking) {
                   <td style="padding:8px 16px;font-size:14px;font-weight:700;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${escapeHtml(booking.reference)}</td>
                 </tr>
                 <tr>
-                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Destination</td>
+                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Service</td>
                   <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${escapeHtml(booking.destination)}</td>
                 </tr>
                 ${booking.region ? `<tr>
@@ -164,11 +164,15 @@ function buildBookingConfirmationHtml(booking) {
                   <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${nights} day${nights > 1 ? 's' : ''}</td>
                 </tr>` : ''}
                 <tr>
-                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Travelers</td>
-                  <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${booking.adults} adult${booking.adults > 1 ? 's' : ''}${booking.children ? ', ' + booking.children + ' child' + (booking.children > 1 ? 'ren' : '') : ''}</td>
+                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Crew Members</td>
+                  <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${booking.adults}</td>
                 </tr>
+                ${booking.children > 0 ? `<tr>
+                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Cameras</td>
+                  <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${booking.children}</td>
+                </tr>` : ''}
                 ${booking.infants > 0 ? `<tr>
-                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Porters</td>
+                  <td style="padding:8px 16px;font-size:14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Editing Hours</td>
                   <td style="padding:8px 16px;font-size:14px;color:#1a2332;border-bottom:1px solid #e2e8f0;text-align:right;">${booking.infants}</td>
                 </tr>` : ''}
                 <tr>
@@ -179,7 +183,7 @@ function buildBookingConfirmationHtml(booking) {
               <p style="margin:0 0 8px;font-size:14px;color:#3a4658;"><strong>Contact:</strong> ${escapeHtml(booking.customerEmail)}${booking.customerPhone ? ' | ' + escapeHtml(booking.customerPhone) : ''}</p>
               <p style="margin:0 0 24px;font-size:14px;color:#3a4658;"><strong>Status:</strong> Pending Confirmation</p>
               <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#64748b;">
-                Our team will contact you shortly to confirm your booking and share travel details, packing list, and meeting point information.
+                Our team will contact you shortly to confirm your booking and share project details, timeline, and next steps.
               </p>
               <div style="text-align:center;margin:24px 0;">
                 <a href="https://gilgitadventuretreks.com" style="display:inline-block;background:#1B4332;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:600;font-size:15px;">Visit Our Website</a>

@@ -1068,6 +1068,249 @@
     }
   }
 
+  /* --------------------------------------------------------
+     BOOKING WIZARD
+  -------------------------------------------------------- */
+  let currentStep = 1;
+  const maxSteps = 5;
+  const bookingData = {
+    destination: '',
+    destinationName: '',
+    checkIn: '',
+    checkOut: '',
+    adults: 2,
+    children: 0,
+    infants: 0
+  };
+
+  function initBookingWizard() {
+    const nextBtn = $('#wizardNext');
+    const prevBtn = $('#wizardPrev');
+
+    if (!nextBtn || !prevBtn) return;
+
+    // Next button
+    nextBtn.addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        if (currentStep < maxSteps) {
+          if (currentStep === 4) {
+            submitBooking();
+          } else {
+            goToStep(currentStep + 1);
+          }
+        }
+      }
+    });
+
+    // Previous button
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        goToStep(currentStep - 1);
+      }
+    });
+
+    // Counter buttons
+    $$('.counter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
+        const isPlus = btn.classList.contains('plus');
+        const countEl = $(`#${target}Count`);
+        let count = parseInt(countEl.textContent);
+
+        if (isPlus) {
+          count++;
+        } else if (count > 0) {
+          count--;
+        }
+
+        countEl.textContent = count;
+        bookingData[target] = count;
+      });
+    });
+
+    // Render destination cards
+    renderBookingDestinations();
+  }
+
+  function goToStep(step) {
+    // Update panels
+    $$('.wizard-panel').forEach(panel => panel.classList.remove('active'));
+    $(`.wizard-panel[data-panel="${step}"]`)?.classList.add('active');
+
+    // Update step indicators
+    $$('.wizard-step').forEach((s, i) => {
+      const stepNum = i + 1;
+      s.classList.remove('active');
+      if (stepNum < step) {
+        s.classList.add('completed');
+      } else {
+        s.classList.remove('completed');
+      }
+      if (stepNum === step) {
+        s.classList.add('active');
+      }
+    });
+
+    // Update connectors
+    $$('.wizard-connector').forEach((c, i) => {
+      if (i < step - 1) {
+        c.classList.add('active');
+      } else {
+        c.classList.remove('active');
+      }
+    });
+
+    currentStep = step;
+
+    // Update buttons
+    const prevBtn = $('#wizardPrev');
+    const nextBtn = $('#wizardNext');
+
+    if (prevBtn) prevBtn.disabled = (step === 1);
+    if (nextBtn) {
+      if (step === 4) {
+        nextBtn.textContent = 'Confirm Booking';
+      } else if (step === 5) {
+        nextBtn.textContent = 'Start New Booking';
+        nextBtn.onclick = () => window.location.reload();
+      } else {
+        nextBtn.textContent = 'Continue';
+      }
+    }
+
+    // Update review if on step 4
+    if (step === 4) {
+      updateReview();
+    }
+  }
+
+  function validateStep(step) {
+    if (step === 1) {
+      if (!bookingData.destination) {
+        alert('Please select a service');
+        return false;
+      }
+    } else if (step === 2) {
+      const checkIn = $('#bookingCheckIn')?.value;
+      const checkOut = $('#bookingCheckOut')?.value;
+      if (!checkIn || !checkOut) {
+        alert('Please select start and end dates');
+        return false;
+      }
+      if (new Date(checkIn) >= new Date(checkOut)) {
+        alert('End date must be after start date');
+        return false;
+      }
+      bookingData.checkIn = checkIn;
+      bookingData.checkOut = checkOut;
+    }
+    return true;
+  }
+
+  function renderBookingDestinations() {
+    const container = $('#bookingDestinations');
+    if (!container || destinations.length === 0) return;
+
+    container.innerHTML = destinations.map(d => `
+      <div class="booking-dest-card" data-id="${d.id}" data-name="${d.name}">
+        <img src="${d.image}" alt="${d.name}" loading="lazy">
+        <div class="booking-dest-info">
+          <h4>${d.name}</h4>
+          <p>${d.country}</p>
+        </div>
+      </div>
+    `).join('');
+
+    // Click handlers
+    $$('.booking-dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        $$('.booking-dest-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        bookingData.destination = card.dataset.id;
+        bookingData.destinationName = card.dataset.name;
+      });
+    });
+  }
+
+  function updateReview() {
+    const reviewEl = $('#bookingReview');
+    if (!reviewEl) return;
+
+    const nights = Math.ceil((new Date(bookingData.checkOut) - new Date(bookingData.checkIn)) / (1000 * 60 * 60 * 24));
+
+    reviewEl.innerHTML = `
+      <div class="review-item">
+        <span class="review-label">Service:</span>
+        <span class="review-value">${bookingData.destinationName}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">Start Date:</span>
+        <span class="review-value">${new Date(bookingData.checkIn).toLocaleDateString()}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">End Date:</span>
+        <span class="review-value">${new Date(bookingData.checkOut).toLocaleDateString()}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">Duration:</span>
+        <span class="review-value">${nights} day${nights > 1 ? 's' : ''}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">Crew Members:</span>
+        <span class="review-value">${bookingData.adults}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">Cameras:</span>
+        <span class="review-value">${bookingData.children}</span>
+      </div>
+      <div class="review-item">
+        <span class="review-label">Editing Hours:</span>
+        <span class="review-value">${bookingData.infants}</span>
+      </div>
+    `;
+  }
+
+  async function submitBooking() {
+    const user = localStorage.getItem('user_token');
+    if (!user) {
+      alert('Please login to complete booking');
+      window.location.href = '/login.html';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user}`
+        },
+        body: JSON.stringify({
+          destination: bookingData.destinationName,
+          checkInDate: bookingData.checkIn,
+          checkOutDate: bookingData.checkOut,
+          adults: bookingData.adults,
+          children: bookingData.children,
+          infants: bookingData.infants,
+          totalPrice: 0,
+          status: 'pending'
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        $('#bookingRef').textContent = data._id?.slice(-8).toUpperCase() || 'CONFIRMED';
+        goToStep(5);
+      } else {
+        alert(data.message || 'Booking failed');
+      }
+    } catch (err) {
+      console.error('Booking error:', err);
+      alert('Failed to submit booking. Please try again.');
+    }
+  }
+
   async function init() {
     try {
       // Reuse pre-fetched data (now includes videos & gallery for background loading)
@@ -1096,6 +1339,7 @@
     renderTeam();
     renderVideos();
     renderGallery();
+    initBookingWizard();
     updateNavAuth();
     injectDestinationSchema();
 

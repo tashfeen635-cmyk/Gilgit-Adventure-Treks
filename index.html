@@ -442,6 +442,130 @@
     </div>
   </section>
 
+    <!-- ============ BOOKING FLOW SECTION ============ -->
+       <section class="booking section" id="booking">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-tag">Book a Service</span>
+        <h2 class="section-title">Book Your Production</h2>
+        <p class="section-description">Simple, transparent booking in just a few steps. No hidden fees — honest pricing from a professional team.</p>
+      </div>
+      <div class="booking-wizard reveal-up">
+        <div class="wizard-steps" role="tablist" aria-label="Booking steps">
+          <div class="wizard-step active" data-step="1" role="tab" aria-selected="true">
+            <span class="step-number">1</span>
+            <span class="step-label">Service</span>
+          </div>
+          <div class="wizard-connector active"></div>
+          <div class="wizard-step" data-step="2" role="tab" aria-selected="false">
+            <span class="step-number">2</span>
+            <span class="step-label">Dates</span>
+          </div>
+          <div class="wizard-connector"></div>
+          <div class="wizard-step" data-step="3" role="tab" aria-selected="false">
+            <span class="step-number">3</span>
+            <span class="step-label">Details</span>
+          </div>
+          <div class="wizard-connector"></div>
+          <div class="wizard-step" data-step="4" role="tab" aria-selected="false">
+            <span class="step-number">4</span>
+            <span class="step-label">Review</span>
+          </div>
+          <div class="wizard-connector"></div>
+          <div class="wizard-step" data-step="5" role="tab" aria-selected="false">
+            <span class="step-number">5</span>
+            <span class="step-label">Confirm</span>
+          </div>
+        </div>
+        <div class="wizard-body">
+          <!-- Step 1: Destination -->
+          <div class="wizard-panel active" data-panel="1" role="tabpanel">
+            <h3>Select a service</h3>
+            <div class="booking-destinations" id="bookingDestinations">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+          <!-- Step 2: Dates -->
+          <div class="wizard-panel" data-panel="2" role="tabpanel">
+            <h3>When is your event/project?</h3>
+            <div class="date-picker-group">
+              <div class="date-field">
+                <label for="bookingCheckIn">Start Date</label>
+                <input type="date" id="bookingCheckIn">
+              </div>
+              <div class="date-field">
+                <label for="bookingCheckOut">End Date</label>
+                <input type="date" id="bookingCheckOut">
+              </div>
+            </div>
+            <div class="date-summary" id="dateSummary"></div>
+          </div>
+          <!-- Step 3: Travelers -->
+          <div class="wizard-panel" data-panel="3" role="tabpanel">
+            <h3>Project details</h3>
+            <div class="traveler-selectors">
+              <div class="traveler-row">
+                <div class="traveler-info">
+                  <span class="traveler-type">Crew Members</span>
+                  <span class="traveler-desc">Camera operators, etc.</span>
+                </div>
+                <div class="traveler-counter">
+                  <button class="counter-btn minus" data-target="adults" aria-label="Decrease adults">−</button>
+                  <span class="counter-value" id="adultsCount">2</span>
+                  <button class="counter-btn plus" data-target="adults" aria-label="Increase adults">+</button>
+                </div>
+              </div>
+              <div class="traveler-row">
+                <div class="traveler-info">
+                  <span class="traveler-type">Cameras</span>
+                  <span class="traveler-desc">Number of camera angles</span>
+                </div>
+                <div class="traveler-counter">
+                  <button class="counter-btn minus" data-target="children" aria-label="Decrease children">−</button>
+                  <span class="counter-value" id="childrenCount">0</span>
+                  <button class="counter-btn plus" data-target="children" aria-label="Increase children">+</button>
+                </div>
+              </div>
+              <div class="traveler-row">
+                <div class="traveler-info">
+                  <span class="traveler-type">Editing Hours</span>
+                  <span class="traveler-desc">Post-production time</span>
+                </div>
+                <div class="traveler-counter">
+                  <button class="counter-btn minus" data-target="infants" aria-label="Decrease porters">−</button>
+                  <span class="counter-value" id="infantsCount">0</span>
+                  <button class="counter-btn plus" data-target="infants" aria-label="Increase porters">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Step 4: Review -->
+          <div class="wizard-panel" data-panel="4" role="tabpanel">
+            <h3>Review Your Booking</h3>
+            <div class="booking-review" id="bookingReview">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+          <!-- Step 5: Confirm -->
+          <div class="wizard-panel" data-panel="5" role="tabpanel">
+            <div class="booking-confirm">
+              <div class="confirm-icon">
+                <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="38" fill="none" stroke="#2D6A4F" stroke-width="3"/><path d="M24 40l10 10 22-22" fill="none" stroke="#2D6A4F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Booking Confirmed!</h3>
+              <p>Your production is booked! Check your email for confirmation details, project brief, and next steps.</p>
+              <p class="booking-ref">Booking Reference: <strong id="bookingRef">SP-2026-XXXXX</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-outline wizard-prev" id="wizardPrev" disabled>Back</button>
+          <button class="btn btn-primary wizard-next" id="wizardNext">Continue</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ NEWSLETTER & FOOTER ============ -->
   <section class="newsletter" id="newsletter">
     <div class="container">

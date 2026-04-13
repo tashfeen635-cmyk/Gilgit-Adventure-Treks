@@ -20,7 +20,12 @@
       "Bash(powershell -Command \"& { $files = @\\(''destinations.html'',''jeep-safaris.html'',''book.html'',''trip-planner.html'',''deals.html'',''reviews.html'',''contact.html''\\); foreach \\($f in $files\\) { $path = ''C:\\\\Users\\\\hp\\\\OneDrive\\\\Desktop\\\\New folder \\(2\\)\\\\'' + $f; $size = \\(Get-Item $path\\).Length; Write-Host \"\"$f - $size bytes\"\" } }\")",
       "Bash(del \"C:\\\\Users\\\\hp\\\\OneDrive\\\\Desktop\\\\New folder \\(2\\)\\\\nul\")",
       "WebFetch(domain:gilgit-adventure-treks.vercel.app)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(start:*)",
+      "Bash(timeout:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c \"taskkill /F /IM node.exe\")",
+      "Bash(netstat:*)"
     ]
   }
 }

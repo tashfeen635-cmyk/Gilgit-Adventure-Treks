@@ -150,7 +150,6 @@ Make sure these are set in Vercel:
 
 - ✅ `MONGODB_URI` - Your MongoDB connection string
 - ✅ `JWT_SECRET` - For user authentication
-- ✅ `DEV_JWT_SECRET` - For developer panel
 - ⚠️ `GROQ_API_KEY` - **REQUIRED for chatbot** (currently missing!)
 - ✅ `EMAIL_USER` - Gmail for newsletters
 - ✅ `EMAIL_PASS` - Gmail app password

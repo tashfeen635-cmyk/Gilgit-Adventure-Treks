@@ -49,8 +49,8 @@ const teamMembers = [
   { name: 'Zara Batool', role: 'Community & Marketing Lead', bio: 'Skardu local passionate about responsible tourism. Connects travelers with authentic cultural experiences across Baltistan.', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80', facebook: '#', instagram: '#', sortOrder: 4 }
 ];
 
-// Seed admin account (safe to run multiple times)
-router.post('/seed-admin', async (req, res) => {
+// Seed admin account (safe to run multiple times) - GET and POST
+const seedAdminHandler = async (req, res) => {
   try {
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ username: 'admin' });
@@ -80,7 +80,10 @@ router.post('/seed-admin', async (req, res) => {
     console.error('Admin seed error:', err);
     res.status(500).json({ error: err.message });
   }
-});
+};
+
+router.get('/seed-admin', seedAdminHandler);
+router.post('/seed-admin', seedAdminHandler);
 
 // Seed only gallery and videos (safe to run multiple times)
 router.post('/seed-media', async (req, res) => {

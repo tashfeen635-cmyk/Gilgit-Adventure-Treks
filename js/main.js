@@ -190,7 +190,6 @@
               <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
               ${dest.rating}
             </span>
-            <span class="top-dest-price">From ${formatPKR(dest.price)}</span>
           </div>
           <button class="top-dest-btn" data-id="${dest.id}">Explore</button>
         </div>
@@ -215,7 +214,7 @@
         </div>
         <div class="map-dest-info">
           <div class="map-dest-name">${dest.name}</div>
-          <div class="map-dest-detail">From ${formatPKR(dest.price)}</div>
+          <div class="map-dest-detail">${dest.country}</div>
         </div>
       `;
       item.addEventListener('click', () => openModal(dest.id));
@@ -245,7 +244,8 @@
     $('#modalRating').innerHTML = `<span class="stars">${generateStars(dest.rating)}</span> ${dest.rating} (${dest.reviews.toLocaleString()} reviews)`;
     $('#modalDescription').textContent = dest.description;
     $('#modalHighlights').innerHTML = dest.highlights.map(h => `<span class="highlight-tag">${h}</span>`).join('');
-    $('#modalPrice').innerHTML = `${formatPKR(dest.price)} <span>/person</span>`;
+    // Price hidden - users contact for pricing
+    $('#modalPrice').style.display = 'none';
     $('#modalBookBtn').href = 'book.html?destination=' + dest.id;
 
     modal.hidden = false;
@@ -361,7 +361,6 @@
 
     previewDeals.forEach((deal, idx) => {
       const card = createEl('div', { className: 'deal-card' });
-      const savePercent = Math.round((1 - deal.newPrice / deal.oldPrice) * 100);
 
       card.innerHTML = `
         <span class="deal-badge">${deal.badge}</span>
@@ -371,24 +370,13 @@
         <div class="deal-card-body">
           <h3 class="deal-card-name">${deal.name}</h3>
           <p class="deal-card-desc">${deal.description}</p>
-          <div class="deal-pricing">
-            <span class="deal-old-price">${formatPKR(deal.oldPrice)}</span>
-            <span class="deal-new-price">${formatPKR(deal.newPrice)}</span>
-            <span class="deal-save">Save ${savePercent}%</span>
-          </div>
-          <div class="deal-countdown" data-idx="${idx}">
-            <div class="countdown-unit"><span class="countdown-value" data-unit="days">0</span><span class="countdown-label">Days</span></div>
-            <div class="countdown-unit"><span class="countdown-value" data-unit="hours">0</span><span class="countdown-label">Hours</span></div>
-            <div class="countdown-unit"><span class="countdown-value" data-unit="mins">0</span><span class="countdown-label">Mins</span></div>
-            <div class="countdown-unit"><span class="countdown-value" data-unit="secs">0</span><span class="countdown-label">Secs</span></div>
-          </div>
           <a href="book.html" class="deal-book-btn">Book This Package</a>
         </div>
       `;
       dealsGrid.appendChild(card);
     });
 
-    updateCountdowns();
+    // Countdown removed - no pressure pricing
   }
 
   function updateCountdowns() {

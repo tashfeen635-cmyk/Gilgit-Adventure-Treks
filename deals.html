@@ -382,17 +382,6 @@
           '<div class="deal-card-body">' +
             '<h3 class="deal-card-name">' + (deal.name || '') + '</h3>' +
             '<p class="deal-card-desc">' + (deal.description || '') + '</p>' +
-            '<div class="deal-pricing">' +
-              '<span class="deal-old-price">' + formatPKR(deal.originalPrice || 0) + '</span>' +
-              '<span class="deal-new-price">' + formatPKR(deal.discountedPrice || 0) + '</span>' +
-              '<span class="deal-save">Save ' + savePercent + '%</span>' +
-            '</div>' +
-            '<div class="deal-countdown" data-idx="' + idx + '">' +
-              '<div class="countdown-unit"><span class="countdown-value" data-unit="days">00</span><span class="countdown-label">Days</span></div>' +
-              '<div class="countdown-unit"><span class="countdown-value" data-unit="hours">00</span><span class="countdown-label">Hours</span></div>' +
-              '<div class="countdown-unit"><span class="countdown-value" data-unit="mins">00</span><span class="countdown-label">Mins</span></div>' +
-              '<div class="countdown-unit"><span class="countdown-value" data-unit="secs">00</span><span class="countdown-label">Secs</span></div>' +
-            '</div>' +
             '<a href="book.html" class="deal-book-btn">Book This Package</a>' +
           '</div>';
 

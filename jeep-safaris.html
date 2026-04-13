@@ -409,7 +409,8 @@
       document.getElementById('modalRating').innerHTML = '<span class="stars">' + generateStars(dest.rating) + '</span> ' + dest.rating + ' (' + dest.reviews.toLocaleString() + ' reviews)';
       document.getElementById('modalDescription').textContent = dest.description;
       document.getElementById('modalHighlights').innerHTML = dest.highlights.map(function(h) { return '<span class="highlight-tag">' + h + '</span>'; }).join('');
-      document.getElementById('modalPrice').innerHTML = formatPKR(dest.price) + ' <span>/person</span>';
+      // Price hidden - contact for pricing
+      document.getElementById('modalPrice').style.display = 'none';
       document.getElementById('modalBookBtn').onclick = function() {
         window.location.href = 'book.html?destination=' + dest.id;
       };
@@ -467,10 +468,6 @@
               '<span class="rating-text">' + dest.rating + ' (' + dest.reviews.toLocaleString() + ')</span>' +
             '</div>' +
             '<div class="dest-card-footer">' +
-              '<div class="dest-card-price">' +
-                '<span class="price-amount">' + formatPKR(dest.price) + '</span>' +
-                '<span class="price-per"> /person</span>' +
-              '</div>' +
               '<button class="dest-card-btn" data-id="' + dest.id + '">Explore</button>' +
             '</div>' +
           '</div>';
@@ -599,7 +596,7 @@
         <div class="chat-message bot-message">
           <div class="message-avatar">🤖</div>
           <div class="message-content">
-            <p>Hi! Interested in jeep safaris? Ask me about routes, prices, and best times to visit!</p>
+            <p>Hi! Interested in jeep safaris? Ask me about routes, destinations, and best times to visit!</p>
           </div>
         </div>
       </div>

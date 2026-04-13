@@ -8,7 +8,8 @@ router.get('/', async (req, res) => {
     const destinations = await Destination.find().sort({ id: 1 });
     res.json(destinations);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get destinations error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
@@ -44,7 +45,8 @@ router.delete('/:id', auth, async (req, res) => {
     if (!destination) return res.status(404).json({ message: 'Destination not found' });
     res.json({ message: 'Destination deleted' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Delete destination error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

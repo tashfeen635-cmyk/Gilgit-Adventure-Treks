@@ -130,6 +130,27 @@ function setupImageUpload(fileInputId, urlInputId) {
   });
 }
 
+/* ── Video Upload Helper ── */
+function setupVideoUpload(fileInputId, urlInputId) {
+  const fileInput = document.getElementById(fileInputId);
+  const urlInput = document.getElementById(urlInputId);
+  if (!fileInput || !urlInput) return;
+
+  fileInput.addEventListener('change', function() {
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) { alert('Please select a video file.'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('Video must be under 10MB.'); return; }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      urlInput.value = e.target.result;
+      urlInput.dispatchEvent(new Event('change'));
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 /* ── Pagination Helper ── */
 function paginate(items, page, perPage) {
   perPage = perPage || 15;

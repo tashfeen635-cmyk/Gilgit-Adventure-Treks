@@ -1,4 +1,5 @@
 initAdminLayout();
+setupVideoUpload('vFile', 'vUrl');
 
 let allVideos = [];
 

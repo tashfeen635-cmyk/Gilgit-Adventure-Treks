@@ -23,7 +23,8 @@
           "js/**",
           "images/**",
           "admin/**",
-          "videos/**"
+          "videos/**",
+          "backend/**"
         ]
       }
     }

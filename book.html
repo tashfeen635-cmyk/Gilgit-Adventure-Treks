@@ -865,5 +865,42 @@
 
   })();
   </script>
+
+  <!-- AI Chatbot Widget -->
+  <div class="chat-widget" id="chatWidget">
+    <button class="chat-toggle" id="chatToggle" aria-label="Toggle chat">
+      <svg class="chat-icon" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" fill="currentColor"/>
+        <path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="currentColor"/>
+      </svg>
+      <svg class="close-icon" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+      </svg>
+    </button>
+    <div class="chat-window" id="chatWindow" hidden>
+      <div class="chat-header">
+        <h3>Travel Assistant</h3>
+        <p>Need help with booking?</p>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message bot-message">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <p>Hi! Need help choosing a tour or have questions before booking? I'm here to help!</p>
+          </div>
+        </div>
+      </div>
+      <form class="chat-input-form" id="chatForm">
+        <input type="text" id="chatInput" placeholder="Ask about booking, tours..." required autocomplete="off">
+        <button type="submit" aria-label="Send message">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+  <script src="js/chatbot.js"></script>
+
 </body>
 </html>

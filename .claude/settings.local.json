@@ -7,7 +7,20 @@
       "Bash(npm run seed:*)",
       "Bash(node:*)",
       "Bash(curl:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dir:*)",
+      "Bash(git restore:*)",
+      "Bash(find:*)",
+      "Bash(npx vercel env ls:*)",
+      "Bash(findstr:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(powershell -Command \"& { $files = @\\(''destinations.html'',''jeep-safaris.html'',''book.html'',''trip-planner.html'',''deals.html'',''reviews.html'',''contact.html''\\); foreach \\($f in $files\\) { $path = ''C:\\\\Users\\\\hp\\\\OneDrive\\\\Desktop\\\\New folder \\(2\\)\\\\'' + $f; $size = \\(Get-Item $path\\).Length; Write-Host \"\"$f - $size bytes\"\" } }\")",
+      "Bash(del \"C:\\\\Users\\\\hp\\\\OneDrive\\\\Desktop\\\\New folder \\(2\\)\\\\nul\")",
+      "WebFetch(domain:gilgit-adventure-treks.vercel.app)",
+      "Bash(tail:*)"
     ]
   }
 }

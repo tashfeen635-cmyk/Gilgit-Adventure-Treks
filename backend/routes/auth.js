@@ -88,7 +88,8 @@ router.put('/profile', auth, async (req, res) => {
 
     res.json({ message: 'Profile updated successfully', token, username: admin.username });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Profile update error:', err.message, err.stack);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

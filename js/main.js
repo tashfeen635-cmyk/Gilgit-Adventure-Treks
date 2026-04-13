@@ -557,13 +557,15 @@
   -------------------------------------------------------- */
 
   // Preload videos when section is approaching (before user reaches it)
+  // Only preload actual videos, skip cards with thumbnail images
   const videoSectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Preload all video thumbnails when section is near
+        // Preload only video preview cards (cards without thumbnails)
         $$('.video-card').forEach(card => {
           const vid = card.querySelector('video');
           const src = card.dataset.video;
+          // Only preload if card uses video (not thumbnail image)
           if (vid && src && !vid.src) {
             vid.src = src;
             vid.load(); // Preload video metadata and first frame
@@ -708,14 +710,28 @@
         tabindex: '0',
         'data-video': v.videoUrl
       });
-      card.innerHTML = `
-        <video muted loop playsinline preload="none"></video>
-        <div class="video-card-overlay">
-          <span class="${tagClass}">${v.tag}</span>
-          <h3 class="video-card-title">${v.title}</h3>
-          <p class="video-card-desc">${v.description}</p>
-        </div>
-      `;
+
+      // Use thumbnail image for fast loading, fallback to video preview
+      if (v.thumbnailUrl) {
+        card.innerHTML = `
+          <img src="${v.thumbnailUrl}" alt="${v.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+          <div class="video-card-overlay">
+            <span class="${tagClass}">${v.tag}</span>
+            <h3 class="video-card-title">${v.title}</h3>
+            <p class="video-card-desc">${v.description}</p>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `
+          <video muted loop playsinline preload="none"></video>
+          <div class="video-card-overlay">
+            <span class="${tagClass}">${v.tag}</span>
+            <h3 class="video-card-title">${v.title}</h3>
+            <p class="video-card-desc">${v.description}</p>
+          </div>
+        `;
+      }
+
       card.addEventListener('click', () => openReels(index));
       card.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openReels(index); }

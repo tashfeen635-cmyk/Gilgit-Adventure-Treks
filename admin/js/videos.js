@@ -1,5 +1,6 @@
 initAdminLayout();
 setupVideoUpload('vFile', 'vUrl');
+setupImageUpload('vThumbnailFile', 'vThumbnail');
 
 let allVideos = [];
 
@@ -49,6 +50,7 @@ function editVideo(id) {
   document.getElementById('vTag').value = v.tag || 'Cinematic';
   document.getElementById('vOrder').value = v.sortOrder || 0;
   document.getElementById('vUrl').value = v.videoUrl;
+  document.getElementById('vThumbnail').value = v.thumbnailUrl || '';
   openModal('videoModal');
 }
 
@@ -60,7 +62,8 @@ async function saveVideo() {
     description: document.getElementById('vDesc').value.trim(),
     tag: document.getElementById('vTag').value,
     sortOrder: parseInt(document.getElementById('vOrder').value) || 0,
-    videoUrl: document.getElementById('vUrl').value.trim()
+    videoUrl: document.getElementById('vUrl').value.trim(),
+    thumbnailUrl: document.getElementById('vThumbnail').value.trim()
   };
 
   saveBtn.disabled = true;

@@ -12,4 +12,9 @@ const reviewSchema = new mongoose.Schema({
   status: { type: String, default: 'approved', enum: ['pending', 'approved', 'rejected'] }
 }, { timestamps: true });
 
+// Indexes for faster queries
+reviewSchema.index({ createdAt: -1 }); // Sort by date
+reviewSchema.index({ status: 1 }); // Filter by status
+reviewSchema.index({ rating: -1 }); // Sort by rating
+
 module.exports = mongoose.model('Review', reviewSchema);

@@ -42,7 +42,7 @@ router.post('/', optionalUserAuth, validate(schemas.booking), async (req, res) =
 // GET /api/bookings (auth)
 router.get('/', auth, async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
+    const bookings = await Booking.find().sort({ createdAt: -1 }).lean();
     res.json(bookings);
   } catch (err) {
     console.error('Get bookings error:', err.message);

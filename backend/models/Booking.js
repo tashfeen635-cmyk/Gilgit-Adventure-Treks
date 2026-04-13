@@ -17,4 +17,9 @@ const bookingSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }
 }, { timestamps: true });
 
+// Indexes for faster queries
+bookingSchema.index({ createdAt: -1 }); // Sort by date (newest first)
+bookingSchema.index({ status: 1 }); // Filter by status
+bookingSchema.index({ customerEmail: 1 }); // Search by email
+
 module.exports = mongoose.model('Booking', bookingSchema);

@@ -11,4 +11,8 @@ const dealSchema = new mongoose.Schema({
   expiresAt: { type: Date, required: true }
 }, { timestamps: true });
 
+// Indexes for faster queries
+dealSchema.index({ createdAt: -1 }); // Sort by date
+dealSchema.index({ expiresAt: 1 }); // Filter by expiration
+
 module.exports = mongoose.model('Deal', dealSchema);

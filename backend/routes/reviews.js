@@ -19,10 +19,11 @@ router.get('/', async (req, res) => {
 // GET /api/reviews/all (admin — all reviews including pending)
 router.get('/all', auth, async (req, res) => {
   try {
-    const reviews = await Review.find().sort({ createdAt: -1 });
+    const reviews = await Review.find().sort({ createdAt: -1 }).lean();
     res.json(reviews);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get reviews error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

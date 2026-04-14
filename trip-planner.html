@@ -43,6 +43,9 @@
     .breadcrumb a { color: #fff; text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
     .planner-page-section { padding: 3rem 0 4rem; }
+    .ai-itinerary { line-height: 1.7; font-size: 14px; }
+    .ai-itinerary strong { color: #2D6A4F; }
+    .planner-generate:disabled { cursor: not-allowed; }
   </style>
 
   <!-- Schema.org Structured Data -->
@@ -490,16 +493,55 @@
       return itineraryHTML;
     }
 
-    // Generate button
+    // Generate button — calls AI API with local fallback
     plannerGenerate.addEventListener('click', function() {
-      var interests = $$('.planner-tag.active').map(function(t) { return t.textContent; }).join(', ') || 'Valleys';
-      addChatMessage('Generate a trek with interests: ' + interests, true);
+      var budget = $('#plannerBudget').value;
+      var duration = $('#plannerDuration').value;
+      var style = $('#plannerStyle').value;
+      var interestTags = $$('.planner-tag.active').map(function(t) { return t.dataset.interest; });
+      var interestLabels = $$('.planner-tag.active').map(function(t) { return t.textContent; }).join(', ') || 'Valleys';
 
+      if (interestTags.length === 0) interestTags.push('valleys');
+
+      addChatMessage('Generate a trek with interests: ' + interestLabels, true);
       showTypingIndicator();
-      setTimeout(function() {
+      plannerGenerate.disabled = true;
+      plannerGenerate.style.opacity = '0.6';
+
+      var budgetLabel = budget === 'budget' ? 'Budget (PKR 30,000-60,000)' : budget === 'mid' ? 'Mid-Range (PKR 60,000-150,000)' : 'Premium (PKR 150,000+)';
+      var durationLabel = duration === 'weekend' ? '2-3 days' : duration === 'week' ? '5-7 days' : duration === 'twoweeks' ? '10-14 days' : '1 month+';
+      var styleLabel = style === 'solo' ? 'Solo Explorer' : style === 'couple' ? 'Couple Retreat' : style === 'family' ? 'Family Adventure' : 'Group Trek';
+
+      fetch('/api/ai/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          budget: budgetLabel,
+          duration: durationLabel,
+          interests: interestTags,
+          style: styleLabel
+        })
+      })
+      .then(function(resp) {
+        return resp.json().then(function(data) {
+          if (!resp.ok || !data.plan) throw new Error('AI unavailable');
+          removeTypingIndicator();
+          // Convert markdown bold **text** to <strong>text</strong> and newlines to <br>
+          var formatted = data.plan
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+          addChatMessage('<div class="ai-itinerary">' + formatted + '</div>');
+        });
+      })
+      .catch(function(err) {
+        console.warn('AI API unavailable, using local planner:', err.message);
         removeTypingIndicator();
         addChatMessage(generateItinerary());
-      }, 1800);
+      })
+      .then(function() {
+        plannerGenerate.disabled = false;
+        plannerGenerate.style.opacity = '1';
+      });
     });
 
     function getKeywordResponse(text) {

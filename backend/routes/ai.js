@@ -97,7 +97,7 @@ Based on the traveler's budget, duration, and interests, recommend the best matc
 
 Keep the response well-structured (use ** for bold headings), informative, and exciting. Around 400-500 words. Use both USD and PKR prices. Add relevant emojis to make it engaging.`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -141,7 +141,7 @@ Keep responses concise (2-3 sentences), friendly, and helpful. Share actual pric
 
     const fullPrompt = `${systemContext}\n\nUser: ${message}\n\nAssistant:`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
     const text = response.text();

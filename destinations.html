@@ -164,6 +164,7 @@
       <div class="container">
         <div class="filter-tabs" role="tablist" aria-label="Destination categories">
           <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-tab" data-filter="tour" role="tab" aria-selected="false">Tour Packages</button>
           <button class="filter-tab" data-filter="valley" role="tab" aria-selected="false">Valleys</button>
           <button class="filter-tab" data-filter="trek" role="tab" aria-selected="false">Treks</button>
           <button class="filter-tab" data-filter="lake" role="tab" aria-selected="false">Lakes</button>
@@ -249,7 +250,24 @@
         <h3 class="modal-title" id="modalTitle"></h3>
         <div class="modal-rating" id="modalRating"></div>
         <p class="modal-description" id="modalDescription"></p>
+        <div class="modal-tour-meta" id="modalTourMeta" style="display:none;margin:1rem 0;padding:1rem;background:#f0fdf4;border-radius:8px;font-size:0.9rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;">
+            <div><strong>Duration:</strong> <span id="metaDuration"></span></div>
+            <div><strong>Price:</strong> <span id="metaPrice"></span></div>
+            <div><strong>Group Size:</strong> <span id="metaGroup"></span></div>
+            <div><strong>Difficulty:</strong> <span id="metaDifficulty"></span></div>
+            <div><strong>Best Season:</strong> <span id="metaSeason"></span></div>
+          </div>
+          <div style="margin-top:0.75rem;" id="metaRouteWrap"><strong>Route:</strong> <span id="metaRoute" style="color:#2D6A4F;"></span></div>
+        </div>
         <div class="modal-highlights" id="modalHighlights"></div>
+        <div id="modalTourDetails" style="display:none;">
+          <div id="modalItinerary" style="margin:1rem 0;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;" id="modalIncExcWrap">
+            <div id="modalIncludes"></div>
+            <div id="modalExcludes"></div>
+          </div>
+        </div>
         <div class="modal-footer">
           <span class="modal-price" id="modalPrice"></span>
           <a class="btn btn-primary modal-book-btn" id="modalBookBtn" href="book.html">Book Now</a>
@@ -452,10 +470,13 @@
         card.className = 'dest-card';
         card.setAttribute('role', 'listitem');
         card.setAttribute('data-id', String(dest.id));
+        var badgeText = dest.category === 'tour' && dest.duration ? dest.duration : dest.category;
+        var priceTag = dest.category === 'tour' && dest.priceUSD ? '<span class="dest-card-price-tag" style="position:absolute;bottom:8px;left:8px;background:rgba(45,106,79,0.9);color:#fff;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600;">' + dest.priceUSD + '</span>' : '';
         card.innerHTML =
           '<div class="dest-card-img">' +
             '<img src="' + dest.image + '" alt="' + dest.name + ' — ' + dest.category + ' tour in ' + dest.country + ' | Gilgit Adventure Treks" loading="lazy" width="400" height="300">' +
-            '<span class="dest-card-badge">' + dest.category + '</span>' +
+            '<span class="dest-card-badge">' + badgeText + '</span>' +
+            priceTag +
             (dest.featured ? '<span class="dest-card-top-badge">Top Pick</span>' : '') +
             '<button class="dest-card-favorite" aria-label="Add ' + dest.name + ' to favorites">' +
               '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg>' +
@@ -513,8 +534,61 @@
       document.getElementById('modalRating').innerHTML = '<span class="stars">' + generateStars(dest.rating) + '</span> ' + dest.rating + ' (' + dest.reviews.toLocaleString() + ' reviews)';
       document.getElementById('modalDescription').textContent = dest.description;
       document.getElementById('modalHighlights').innerHTML = dest.highlights.map(function(h) { return '<span class="highlight-tag">' + h + '</span>'; }).join('');
-      // Price hidden - contact for pricing
-      document.getElementById('modalPrice').style.display = 'none';
+
+      // Tour-specific fields
+      var tourMeta = document.getElementById('modalTourMeta');
+      var tourDetails = document.getElementById('modalTourDetails');
+
+      if (dest.category === 'tour' && dest.duration) {
+        tourMeta.style.display = 'block';
+        document.getElementById('metaDuration').textContent = dest.duration || '';
+        document.getElementById('metaPrice').textContent = dest.priceUSD || '';
+        document.getElementById('metaGroup').textContent = dest.groupSize || '';
+        document.getElementById('metaDifficulty').textContent = dest.difficulty || '';
+        document.getElementById('metaSeason').textContent = dest.bestSeason || '';
+        document.getElementById('metaRoute').textContent = dest.route ? dest.route.join(' → ') : '';
+        document.getElementById('metaRouteWrap').style.display = dest.route ? 'block' : 'none';
+
+        tourDetails.style.display = 'block';
+
+        // Itinerary
+        var itinEl = document.getElementById('modalItinerary');
+        if (dest.itinerary && dest.itinerary.length > 0) {
+          itinEl.innerHTML = '<h4 style="margin-bottom:0.5rem;color:#1B4332;">Day-by-Day Itinerary</h4>' +
+            dest.itinerary.map(function(d) {
+              return '<div style="padding:0.4rem 0;border-bottom:1px solid #e2e8f0;font-size:0.85rem;">' +
+                '<strong>Day ' + d.day + ':</strong> ' + d.title + ' — <span style="color:#64748b;">' + d.description + '</span></div>';
+            }).join('');
+        } else {
+          itinEl.innerHTML = '';
+        }
+
+        // Includes / Excludes
+        var incEl = document.getElementById('modalIncludes');
+        var excEl = document.getElementById('modalExcludes');
+        document.getElementById('modalIncExcWrap').style.display = (dest.includes || dest.excludes) ? 'grid' : 'none';
+
+        if (dest.includes && dest.includes.length > 0) {
+          incEl.innerHTML = '<h4 style="color:#2D6A4F;font-size:0.9rem;margin-bottom:0.3rem;">Includes</h4>' +
+            '<ul style="font-size:0.83rem;padding-left:1.2rem;margin:0;color:#334155;">' +
+            dest.includes.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+        } else { incEl.innerHTML = ''; }
+
+        if (dest.excludes && dest.excludes.length > 0) {
+          excEl.innerHTML = '<h4 style="color:#dc2626;font-size:0.9rem;margin-bottom:0.3rem;">Excludes</h4>' +
+            '<ul style="font-size:0.83rem;padding-left:1.2rem;margin:0;color:#64748b;">' +
+            dest.excludes.map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+        } else { excEl.innerHTML = ''; }
+
+        // Show price for tours
+        document.getElementById('modalPrice').style.display = 'inline';
+        document.getElementById('modalPrice').textContent = dest.priceUSD;
+      } else {
+        tourMeta.style.display = 'none';
+        tourDetails.style.display = 'none';
+        document.getElementById('modalPrice').style.display = 'none';
+      }
+
       document.getElementById('modalBookBtn').href = 'book.html?destination=' + dest.id;
 
       modal.hidden = false;

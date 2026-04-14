@@ -140,20 +140,19 @@
           <div class="planner-inputs">
             <h3>Your Preferences</h3>
             <div class="planner-field">
-              <label for="plannerBudget">Budget (PKR)</label>
+              <label for="plannerBudget">Budget</label>
               <select id="plannerBudget">
-                <option value="budget">Budget (PKR 30,000&#8211;60,000)</option>
-                <option value="mid" selected>Mid-Range (PKR 60,000&#8211;150,000)</option>
-                <option value="luxury">Premium (PKR 150,000+)</option>
+                <option value="budget">Budget ($600&#8211;700 / PKR 85K&#8211;100K)</option>
+                <option value="mid" selected>Mid-Range ($700&#8211;800 / PKR 100K&#8211;120K)</option>
+                <option value="premium">Premium ($2,000+ / PKR 300K+)</option>
               </select>
             </div>
             <div class="planner-field">
               <label for="plannerDuration">Trip Duration</label>
               <select id="plannerDuration">
-                <option value="weekend">Weekend (2&#8211;3 days)</option>
-                <option value="week" selected>One Week (5&#8211;7 days)</option>
-                <option value="twoweeks">Two Weeks (10&#8211;14 days)</option>
-                <option value="month">Extended (1 month+)</option>
+                <option value="10days" selected>10&#8211;11 Days (Most Tours)</option>
+                <option value="12days">12 Days (Summer Trek)</option>
+                <option value="18days">18&#8211;21 Days (K2 Expedition)</option>
               </select>
             </div>
             <div class="planner-field">
@@ -254,55 +253,56 @@
     /* AI chat/planner responses — defaults overridden by site settings */
     var aiResponses = {
       valleys: [
-        'Based on your preferences, I recommend a **Naltar Valley & Passu** combo trip! You\'ll see stunning lakes, Attabad Lake, and the famous Hussaini Bridge.',
-        'For a valley experience, **Phander Valley** offers peaceful lakes and untouched natural beauty — perfect for a serene getaway.'
+        'I recommend the **Blossom Jeep Safari** (10 days, $600–650/person) — cherry blossoms in Hunza, Fairy Meadows, and Khunjerab Pass. Perfect for spring!',
+        'The **October Explorer Tour** (11 days, $650–780/person) takes you through Hunza, Naltar Valley, and Fairy Meadows in peak autumn colors!'
       ],
       trekking: [
-        'For trekkers, the **Rakaposhi Base Camp** trek is a perfect day adventure with incredible mountain panoramas!',
-        'If you\'re up for the ultimate challenge, the **K2 Base Camp** trek through Concordia is the adventure of a lifetime!'
+        'For serious trekkers, the **K2 Base Camp & Gondogoro La Trek** (18–21 days, $2,350/person) is the ultimate adventure — Concordia, K2, and a 5,585m pass crossing!',
+        'The **Summer Trekking & Tour** (12 days, $700–800/person) includes trekking at Nanga Parbat\'s Rupal Face plus Hunza Valley highlights.'
       ],
       lakes: [
-        'For lake lovers, I recommend **Attabad Lake + Naltar Lakes** — turquoise waters surrounded by dramatic peaks!',
-        'The **Phander Lake & Sheosar Lake** combo offers the most peaceful and photogenic lake experience in the north.'
+        'The **Autumn Colors Tour** (11 days, $680–750/person) includes Skardu\'s lakes, Attabad Lake, and Lake Saif-ul-Malook!',
+        'The **October Explorer** (11 days, $650–780/person) visits Naltar tri-colored lakes and Lake Saif-ul-Malook.'
       ],
       culture: [
-        'For cultural immersion, **Baltit & Altit Forts** in Gilgit-Baltistan offer 700+ years of history with stunning architecture.',
-        'Experience **Wakhi culture in Passu & Gulmit** — traditional music, local cuisine, and warmth of the mountain people.'
+        'The **October Explorer Tour** visits Khaplu Palace, Shigar Fort, and Baltit Fort — 700+ years of Gilgit-Baltistan heritage!',
+        'The **Blossom Jeep Safari** includes visits to Baltit Fort, Altit Fort, and traditional villages in Hunza and Gupis.'
       ],
       camping: [
-        'For the best camping, **Fairy Meadows** under Nanga Parbat is unbeatable — billions of stars above!',
-        'Try camping at **Deosai National Park** — the highest plateau with wildflowers and wildlife.'
+        'The **Summer Trekking & Tour** ($700–800) includes camping at Nanga Parbat Rupal Face Base Camp — dramatic mountain camping!',
+        'Both the **Autumn Colors Tour** and **October Explorer** include Fairy Meadows camping under a billion stars with Nanga Parbat views.'
       ],
       photography: [
-        'For photographers, **Passu Cones + Attabad Lake + Eagle\'s Nest** offer the most iconic shots in Pakistan!',
-        'The **Deosai Plains** at sunrise offer otherworldly landscape photography opportunities!'
+        'The **Autumn Colors Tour** ($680–750) offers golden poplars, Passu Cones, and Fairy Meadows — every frame is a masterpiece!',
+        'For photographers, the **Blossom Jeep Safari** ($600–650) captures cherry blossoms, Khunjerab Pass, and Phandar Lake.'
       ],
       default: [
-        'I have some wonderful Northern Pakistan suggestions based on your preferences! Let me create a personalized itinerary.'
+        'We have 5 tour packages from $600 to $2,350 — spring blossoms, autumn colors, summer treks, and the legendary K2 Base Camp. Let me find the perfect match!'
       ]
     };
 
     var chatResponses = {
-      'hello': 'Assalam o Alaikum! Ready to explore Pakistan? Tell me what interests you or click Generate My Trek!',
-      'hi': 'Walaikum Assalam! What kind of adventure are you looking for across Pakistan?',
-      'salam': 'Walaikum Assalam! Welcome to Gilgit Adventure Treks. We plan trips across all of Pakistan!',
-      'help': 'I can help you plan a trip anywhere in Pakistan! Set your preferences on the left, or ask me about any destination from Karachi to K2.',
-      'gilgit': 'Gilgit is the gateway to Northern Pakistan! The best time is April-October. Must-sees include Naltar Valley, Fairy Meadows, Deosai, and the stunning Passu Cones.',
-      'skardu': 'Skardu is the gateway to K2 and the highest peaks! Don\'t miss Shangrila Resort, Upper Kachura Lake, the Cold Desert, and Deosai National Park.',
-      'fairy': 'Fairy Meadows offers a front-row view of Nanga Parbat (8,126m)! It\'s a 2-3 hour trek from Tato Village. Camping under the stars here is absolutely magical.',
-      'k2': 'The K2 Base Camp trek is the ultimate mountaineering adventure — 14-18 days through Concordia with views of four 8,000m peaks. Best season is June-August.',
-      'naltar': 'Naltar Valley has incredible color-changing lakes surrounded by pine forests. It also has Pakistan\'s only ski resort! Best visited May-September.',
-      'swat': 'Swat Valley is the Switzerland of Pakistan! Famous for Malam Jabba ski resort, Kalam Valley, and Mingora. Best time: March-October.',
-      'lahore': 'Lahore is the cultural heart of Pakistan! Must-visit: Badshahi Mosque, Lahore Fort, Shalimar Gardens, and delicious food street. We arrange city tours and cultural experiences.',
-      'karachi': 'Karachi offers beaches, history, and amazing food! We arrange tours to Clifton Beach, Mohatta Palace, Karachi Port, and local food experiences.',
-      'islamabad': 'Islamabad is Pakistan\'s capital with Faisal Mosque, Margalla Hills, and Daman-e-Koh. Great base for trips to Murree and northern areas.',
-      'peshawar': 'Peshawar has rich history with Qissa Khwani Bazaar, Peshawar Museum, and traditional Peshawari cuisine. Gateway to Khyber Pass.',
-      'murree': 'Murree is a popular hill station near Islamabad. Great for families, with chairlift rides, Mall Road, and beautiful pine forests. Best in summer and winter.',
-      'budget': 'Budget tours available from PKR 15,000 for city tours to PKR 35,000 for mountain treks. We also have group discounts!',
-      'weather': 'Weather varies by region: Northern areas best May-October, Lahore/Karachi best October-March. We\'ll suggest the right time for your chosen destination.',
-      'best time': 'Best time depends on where you want to go! Northern areas: May-October. Cities like Lahore/Karachi: October-March. Ask about specific destinations!',
-      'food': 'Pakistan has incredible food! Northern: Chapshuro, walnut cake. Lahore: Nihari, Halwa Puri. Karachi: Biryani, BBQ. Peshawar: Chapli Kebab. Food tours available!',
-      'default': 'That sounds exciting! We arrange tours across all of Pakistan — from Karachi beaches to K2 mountains. Set your preferences and click Generate My Trek, or ask about any city!'
+      'hello': 'Assalam o Alaikum! Ready to explore Northern Pakistan? We have tours from $600 to $2,350. Tell me what interests you!',
+      'hi': 'Walaikum Assalam! Looking for spring blossoms, autumn colors, summer treks, or the legendary K2? Let me know!',
+      'salam': 'Walaikum Assalam! Welcome to Gilgit Adventure Treks. We have 5 tour packages — what season are you planning for?',
+      'help': 'Set your preferences on the left and click Generate My Trek! Or ask me about our packages: Blossom Safari ($600), Autumn Colors ($680), Summer Trek ($700), October Explorer ($650), or K2 Base Camp ($2,350).',
+      'price': 'Our packages range from $600 (Blossom Jeep Safari, 10 days) to $2,350 (K2 Base Camp, 18-21 days). Most tours are $650-$800 for 10-12 days. All include transport, meals, and accommodation!',
+      'cheap': 'Our most affordable tour is the Blossom Jeep Safari at $600-650/person for 10 days. It includes Fairy Meadows, Hunza, and Khunjerab Pass!',
+      'blossom': 'The Blossom Jeep Safari is 10 days in spring at $600-650/person. Cherry blossoms, Fairy Meadows, Hunza Valley, Khunjerab Pass, and Phandar Lake. All meals and transport included!',
+      'k2': 'Our K2 Base Camp & Gondogoro La Trek is 18-21 days at $2,350/person. You\'ll trek through Concordia, stand at K2 Base Camp, and cross the 5,585m Gondogoro La pass. The ultimate adventure!',
+      'autumn': 'The Autumn Colors Tour is 11 days at $680-750/person. Fly into Skardu, drive through golden Hunza, visit Fairy Meadows, and end in Naran. October-November is peak season!',
+      'summer': 'The Summer Trekking & Tour is 12 days at $700-800/person. Trek to Nanga Parbat\'s Rupal Face, explore Hunza, cross Khunjerab Pass, and visit Hoper Glacier. June-August!',
+      'october': 'The October Explorer is 11 days at $650-780/person. Fly to Skardu, visit Khaplu Palace, camp at Fairy Meadows, see Naltar Lakes, and end in Naran. Perfect for autumn!',
+      'fairy': 'Fairy Meadows is included in 4 of our 5 tour packages! Camp under the stars with Nanga Parbat (8,126m) as your backdrop. Best in spring or autumn.',
+      'naltar': 'Naltar Valley with its famous tri-colored lakes is included in the October Explorer Tour ($650-780). Also available as a standalone trip (PKR 40,000, 3 days).',
+      'skardu': 'Both the Autumn Colors Tour ($680) and October Explorer ($650) include a scenic flight to Skardu. Visit Shangrila, Kachura Lake, and the Cold Desert!',
+      'hunza': 'Hunza Valley is featured in 4 of our tours! From $600 (Blossom Safari) you can see Baltit Fort, Eagle\'s Nest, and the famous Passu Cones.',
+      'easy': 'Three of our tours are rated Easy: Blossom Jeep Safari ($600), Autumn Colors Tour ($680), and October Explorer ($650). No trekking experience needed!',
+      'difficult': 'For a challenge, try the Summer Trekking & Tour ($700-800, Challenging) or the K2 Base Camp expedition ($2,350, Extreme).',
+      'budget': 'Most tours are $600-$800/person (PKR 85K-100K) for 10-12 days, including transport, hotels, all meals, and guide. The K2 expedition is $2,350 (PKR 350K).',
+      'weather': 'Spring (Mar-Apr): Blossom Safari. Summer (Jun-Aug): K2 Trek & Summer Tour. Autumn (Oct-Nov): Autumn Colors & October Explorer.',
+      'include': 'All tours include: transport, accommodation, all meals, experienced guide, and permits. K2 trek also includes camping gear, porters, and climbing equipment.',
+      'default': 'We have 5 tour packages from $600 to $2,350 covering spring blossoms to K2 Base Camp! Set your preferences and click Generate My Trek, or ask about a specific tour.'
     };
 
     /* --------------------------------------------------------
@@ -443,8 +443,8 @@
       var responsePool = aiResponses[primaryInterest] || aiResponses.default;
       var intro = responsePool[Math.floor(Math.random() * responsePool.length)];
 
-      var durationMap = { weekend: '3 Days', week: '7 Days', twoweeks: '14 Days', month: '30 Days' };
-      var budgetMap = { budget: 'PKR 30,000\u201360,000', mid: 'PKR 60,000\u2013150,000', luxury: 'PKR 150,000+' };
+      var durationMap = { '10days': '10–11 Days', '12days': '12 Days', '18days': '18–21 Days' };
+      var budgetMap = { budget: '$600–700', mid: '$700–800', premium: '$2,000+' };
 
       var relevant = destinations.filter(function(d) {
         return interests.indexOf(d.category) !== -1 ||
@@ -457,7 +457,7 @@
         relevant.push(destinations[0], destinations[2]);
       }
 
-      var days = duration === 'weekend' ? 3 : duration === 'week' ? 7 : duration === 'twoweeks' ? 14 : 30;
+      var days = duration === '10days' ? 10 : duration === '12days' ? 12 : 20;
 
       var itineraryDays = [];
       var dayActivities = [
@@ -508,8 +508,8 @@
       plannerGenerate.disabled = true;
       plannerGenerate.style.opacity = '0.6';
 
-      var budgetLabel = budget === 'budget' ? 'Budget (PKR 30,000-60,000)' : budget === 'mid' ? 'Mid-Range (PKR 60,000-150,000)' : 'Premium (PKR 150,000+)';
-      var durationLabel = duration === 'weekend' ? '2-3 days' : duration === 'week' ? '5-7 days' : duration === 'twoweeks' ? '10-14 days' : '1 month+';
+      var budgetLabel = budget === 'budget' ? 'Budget ($600-700)' : budget === 'mid' ? 'Mid-Range ($700-800)' : 'Premium ($2,000+)';
+      var durationLabel = duration === '10days' ? '10-11 days' : duration === '12days' ? '12 days' : '18-21 days';
       var styleLabel = style === 'solo' ? 'Solo Explorer' : style === 'couple' ? 'Couple Retreat' : style === 'family' ? 'Family Adventure' : 'Group Trek';
 
       fetch('/api/ai/plan', {

@@ -244,8 +244,29 @@
     $('#modalRating').innerHTML = `<span class="stars">${generateStars(dest.rating)}</span> ${dest.rating} (${dest.reviews.toLocaleString()} reviews)`;
     $('#modalDescription').textContent = dest.description;
     $('#modalHighlights').innerHTML = dest.highlights.map(h => `<span class="highlight-tag">${h}</span>`).join('');
-    // Price hidden - users contact for pricing
-    $('#modalPrice').style.display = 'none';
+
+    // Tour-specific meta
+    const tourMeta = $('#modalTourMeta');
+    if (tourMeta) {
+      if (dest.category === 'tour' && dest.duration) {
+        tourMeta.style.display = 'block';
+        $('#metaDuration').textContent = dest.duration || '';
+        $('#metaPrice').textContent = dest.priceUSD || '';
+        $('#metaGroup').textContent = dest.groupSize || '';
+        $('#metaDifficulty').textContent = dest.difficulty || '';
+        $('#metaSeason').textContent = dest.bestSeason || '';
+        $('#metaRoute').textContent = dest.route ? dest.route.join(' → ') : '';
+        $('#metaRouteWrap').style.display = dest.route ? 'block' : 'none';
+        $('#modalPrice').style.display = 'inline';
+        $('#modalPrice').textContent = dest.priceUSD;
+      } else {
+        tourMeta.style.display = 'none';
+        $('#modalPrice').style.display = 'none';
+      }
+    } else {
+      $('#modalPrice').style.display = 'none';
+    }
+
     $('#modalBookBtn').href = 'book.html?destination=' + dest.id;
 
     modal.hidden = false;

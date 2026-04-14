@@ -2,6 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const connectDB = require('../config/db');
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 const LoginLog = require('../models/LoginLog');
 const auth = require('../middleware/auth');
 
@@ -109,6 +110,31 @@ router.put('/profile', auth, async (req, res) => {
     res.json({ message: 'Profile updated successfully', token, username: admin.username });
   } catch (err) {
     console.error('Profile update error:', err.message, err.stack);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// GET /api/auth/users — Admin-only: list all registered users
+router.get('/users', auth, async (req, res) => {
+  try {
+    await connectDB();
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    console.error('List users error:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// DELETE /api/auth/users/:id — Admin-only: delete a user
+router.delete('/users/:id', auth, async (req, res) => {
+  try {
+    await connectDB();
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete user error:', err.message);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });

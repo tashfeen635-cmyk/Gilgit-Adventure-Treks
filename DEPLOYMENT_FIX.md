@@ -54,20 +54,12 @@ Make sure your MongoDB connection string is set in Vercel:
 1. Go to **Settings** → **Environment Variables**
 2. Verify `MONGODB_URI` is set correctly:
    ```
-   MONGODB_URI=mongodb+srv://sabirahmad_db_user:cKPCpACpGBTPYELz@cluster0.eb4cbeq.mongodb.net/gilgit-treks?retryWrites=true&w=majority&appName=Cluster0
+   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority
    ```
 
 ### Step 3: Deploy to Vercel
 
-#### Option A: Push to GitHub (Recommended)
-```bash
-git add .
-git commit -m "Fix Vercel deployment - add backend folder and AI chatbot"
-git push origin main
-```
-Vercel will automatically redeploy.
-
-#### Option B: Manual Deploy via Vercel CLI
+#### Deploy via Vercel CLI
 ```bash
 vercel --prod
 ```
@@ -160,9 +152,8 @@ Make sure these are set in Vercel:
 
 1. ✅ Get GROQ API key from https://console.groq.com/
 2. ✅ Add `GROQ_API_KEY` to Vercel environment variables
-3. ✅ Commit and push changes to GitHub
-4. ✅ Wait for Vercel to redeploy
-5. ✅ Test gallery, videos, and chatbot on live site
+3. ✅ Deploy to Vercel
+4. ✅ Test gallery, videos, and chatbot on live site
 
 ---
 

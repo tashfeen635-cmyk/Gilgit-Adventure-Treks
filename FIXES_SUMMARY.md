@@ -81,16 +81,7 @@ Your chatbot uses the GROQ API, but the API key is missing from your environment
 
 ### Step 2: Deploy to Vercel
 
-#### Option A: Push to GitHub (Recommended)
-```bash
-git add .
-git commit -m "Fix: Add backend folder and floating AI chatbot widget"
-git push origin main
-```
-
-Vercel will automatically detect the push and redeploy your site.
-
-#### Option B: Manual Deploy via Vercel CLI
+#### Deploy via Vercel CLI
 ```bash
 vercel --prod
 ```
@@ -294,10 +285,10 @@ After deploying with the GROQ API key:
 
 1. ✅ Get GROQ API key from https://console.groq.com/
 2. ✅ Add `GROQ_API_KEY` to Vercel environment variables
-3. ✅ Push changes to GitHub (or deploy via CLI)
+3. ✅ Deploy to Vercel
 4. ✅ Wait for Vercel deployment (2-3 minutes)
 5. ✅ Test gallery, videos, and chatbot on live site
-6. ✅ Enjoy your fully functional travel website! 🎉
+6. ✅ Enjoy your fully functional travel website!
 
 ---
 

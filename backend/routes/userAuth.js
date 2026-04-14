@@ -4,6 +4,7 @@ const connectDB = require('../config/db');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Review = require('../models/Review');
+const LoginLog = require('../models/LoginLog');
 const userAuth = require('../middleware/userAuth');
 
 // POST /api/users/register
@@ -43,6 +44,8 @@ router.post('/login', async (req, res) => {
   try {
     await connectDB();
     const { email, password } = req.body;
+    const ip = req.headers['x-forwarded-for'] || req.ip || 'unknown';
+    const userAgent = req.headers['user-agent'] || '';
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
@@ -50,13 +53,18 @@ router.post('/login', async (req, res) => {
 
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
+      LoginLog.create({ userType: 'user', username: email, email, ip, userAgent, success: false, failReason: 'User not found' }).catch(() => {});
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
+      LoginLog.create({ userType: 'user', username: user.name, email, ip, userAgent, success: false, failReason: 'Wrong password' }).catch(() => {});
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Log successful login
+    LoginLog.create({ userType: 'user', username: user.name, email, ip, userAgent, success: true }).catch(() => {});
 
     const token = jwt.sign(
       { id: user._id, email: user.email, role: 'user' },

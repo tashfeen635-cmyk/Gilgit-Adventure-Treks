@@ -50,6 +50,38 @@ OUR TOUR PACKAGES (recommend these first):
    Route: Islamabad → Skardu (flight) → Khaplu → Fairy Meadows → Hunza → Naltar → Naran → Islamabad
    Includes: Skardu flight, transport, hotels, all meals, guide
 
+JEEP SAFARI PLANS:
+
+6. **Deosai Plains Jeep Safari** — 7 Days, $500–550/person (PKR ~75,000)
+   Season: Summer (June–September) | Difficulty: Easy | Group: 6–15
+   Route: Islamabad → Skardu → Deosai Plains → Sheosar Lake → Skardu → Islamabad
+   Includes: Transport, hotels & camping, all meals, guide, national park permits
+
+7. **Fairy Meadows Jeep Safari** — 6 Days, $420–480/person (PKR ~65,000)
+   Season: Summer (May–October) | Difficulty: Moderate | Group: 6–15
+   Route: Islamabad → Chilas → Raikot Bridge → Fairy Meadows → Beyal Camp → Islamabad
+   Includes: Transport, camping, all meals, mountain guide
+
+8. **Shandur Pass Jeep Safari** — 8 Days, $550–620/person (PKR ~80,000)
+   Season: Summer (June–September) | Difficulty: Moderate | Group: 6–12
+   Route: Islamabad → Gilgit → Gupis → Phandar → Shandur Pass → Chitral → Islamabad
+   Includes: 4x4 Jeep, hotels & camping, all meals, guide, permits
+
+9. **Khunjerab Pass Jeep Safari** — 7 Days, $520–580/person (PKR ~78,000)
+   Season: Spring–Autumn (April–October) | Difficulty: Easy | Group: 6–15
+   Route: Islamabad → Hunza → Attabad Lake → Passu → Khunjerab Pass → Islamabad
+   Includes: Transport, hotels, all meals, guide, permits
+
+10. **Shimshal Valley Jeep Safari** — 9 Days, $600–680/person (PKR ~88,000)
+    Season: Summer (June–September) | Difficulty: Moderate | Group: 4–12
+    Route: Islamabad → Hunza → Passu → Shimshal Valley → Hunza → Islamabad
+    Includes: 4x4 Jeep, hotels & homestay, all meals, local guide, permits
+
+11. **Hushe Valley Jeep Safari** — 9 Days, $620–700/person (PKR ~92,000)
+    Season: Summer (June–September) | Difficulty: Moderate | Group: 4–12
+    Route: Islamabad → Skardu → Khaplu → Hushe Valley → Masherbrum BC Trail → Islamabad
+    Includes: 4x4 Jeep, hotels & camping, all meals, trekking guide, permits
+
 STANDALONE DESTINATIONS (can be added as extensions):
 - Naltar Valley — PKR 40,000 (3 days)
 - Deosai National Park — PKR 30,000 (2 days)
@@ -94,6 +126,14 @@ OUR TOUR PACKAGES:
 3. Autumn Colors Tour — 11 Days, $680–750/person, Oct–Nov, Easy
 4. Summer Trekking & Tour — 12 Days, $700–800/person, Jun–Aug, Challenging
 5. October Explorer Tour — 11 Days, $650–780/person, October, Easy
+
+JEEP SAFARI PLANS:
+6. Deosai Plains Jeep Safari — 7 Days, $500–550/person, Jun–Sep, Easy
+7. Fairy Meadows Jeep Safari — 6 Days, $420–480/person, May–Oct, Moderate
+8. Shandur Pass Jeep Safari — 8 Days, $550–620/person, Jun–Sep, Moderate
+9. Khunjerab Pass Jeep Safari — 7 Days, $520–580/person, Apr–Oct, Easy
+10. Shimshal Valley Jeep Safari — 9 Days, $600–680/person, Jun–Sep, Moderate
+11. Hushe Valley Jeep Safari — 9 Days, $620–700/person, Jun–Sep, Moderate
 
 STANDALONE: Naltar Valley (PKR 40,000), Deosai National Park (PKR 30,000), Attabad Lake & Passu (PKR 38,000)
 

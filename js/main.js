@@ -1314,7 +1314,7 @@
   /* --------------------------------------------------------
      AI TRIP/PROJECT PLANNER
   -------------------------------------------------------- */
-  let selectedInterests = ['wedding'];
+  let selectedInterests = ['valleys'];
 
   function initAIPlanner() {
     const generateBtn = $('#plannerGenerate');
@@ -1347,14 +1347,14 @@
       const style = $('#plannerStyle')?.value || 'couple';
 
       if (selectedInterests.length === 0) {
-        addChatMessage('ai', 'Please select at least one project type to generate a plan.');
+        addChatMessage('ai', 'Please select at least one interest to generate a trek plan.');
         return;
       }
 
       // Show loading message
       generateBtn.disabled = true;
       generateBtn.innerHTML = '<span style="opacity:0.7">Generating...</span>';
-      addChatMessage('user', `Generate a ${budget} budget ${duration} project plan for: ${selectedInterests.join(', ')}`);
+      addChatMessage('user', `Generate a ${budget} budget ${duration} trek plan for: ${selectedInterests.join(', ')}`);
 
       try {
         const response = await fetch('/api/ai/plan', {
@@ -1380,7 +1380,7 @@
         addChatMessage('ai', 'Sorry, there was an error. Please try again.');
       } finally {
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-4-4 1.41-1.41L11 14.17l5.59-5.59L18 10l-7 7z" fill="currentColor"/></svg> Plan My Project';
+        generateBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-4-4 1.41-1.41L11 14.17l5.59-5.59L18 10l-7 7z" fill="currentColor"/></svg> Generate My Trek';
       }
     });
 

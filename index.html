@@ -428,8 +428,8 @@
     <div class="container">
       <div class="section-header reveal-up">
         <span class="section-tag">AI-Powered</span>
-        <h2 class="section-title">Project Planner</h2>
-        <p class="section-description">Tell us about your project and our AI will help estimate scope, timeline, and recommend the right production package.</p>
+        <h2 class="section-title">Trip Planner</h2>
+        <p class="section-description">Tell us your travel preferences and our AI will craft the perfect Pakistan itinerary — from budget to adventure style!</p>
       </div>
       <div class="planner-layout reveal-up">
         <div class="planner-inputs">
@@ -443,39 +443,39 @@
             </select>
           </div>
           <div class="planner-field">
-            <label for="plannerDuration">Project Timeline</label>
+            <label for="plannerDuration">Trip Duration</label>
             <select id="plannerDuration">
-              <option value="weekend">Quick (1–2 days)</option>
-              <option value="week" selected>Standard (3–7 days)</option>
-              <option value="twoweeks">Extended (1–2 weeks)</option>
-              <option value="month">Full Production (1 month+)</option>
+              <option value="weekend">Weekend (2–3 days)</option>
+              <option value="week" selected>One Week (5–7 days)</option>
+              <option value="twoweeks">Two Weeks (10–14 days)</option>
+              <option value="month">Extended (1 month+)</option>
             </select>
           </div>
           <div class="planner-field">
-            <label>Project Type</label>
-            <div class="planner-tags" role="group" aria-label="Select project types">
-              <button type="button" class="planner-tag active" data-interest="wedding">Wedding</button>
-              <button type="button" class="planner-tag" data-interest="corporate">Corporate</button>
-              <button type="button" class="planner-tag" data-interest="music">Music Video</button>
-              <button type="button" class="planner-tag" data-interest="event">Event</button>
-              <button type="button" class="planner-tag" data-interest="documentary">Documentary</button>
+            <label>Interests</label>
+            <div class="planner-tags" role="group" aria-label="Select your interests">
+              <button type="button" class="planner-tag active" data-interest="valleys">Valleys</button>
+              <button type="button" class="planner-tag" data-interest="trekking">Trekking</button>
+              <button type="button" class="planner-tag" data-interest="lakes">Lakes</button>
+              <button type="button" class="planner-tag" data-interest="culture">Culture</button>
+              <button type="button" class="planner-tag" data-interest="camping">Camping</button>
               <button type="button" class="planner-tag" data-interest="photography">Photography</button>
-              <button type="button" class="planner-tag" data-interest="commercial">Commercial</button>
-              <button type="button" class="planner-tag" data-interest="branding">Branding</button>
+              <button type="button" class="planner-tag" data-interest="history">History</button>
+              <button type="button" class="planner-tag" data-interest="wildlife">Wildlife</button>
             </div>
           </div>
           <div class="planner-field">
-            <label for="plannerStyle">Client Type</label>
+            <label for="plannerStyle">Travel Style</label>
             <select id="plannerStyle">
-              <option value="solo">Individual</option>
-              <option value="couple" selected>Couple / Wedding</option>
-              <option value="family">Small Business</option>
-              <option value="group">Corporate / Agency</option>
+              <option value="solo">Solo Explorer</option>
+              <option value="couple" selected>Couple Retreat</option>
+              <option value="family">Family Adventure</option>
+              <option value="group">Group Trek</option>
             </select>
           </div>
           <button type="button" class="btn btn-primary planner-generate" id="plannerGenerate">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-4-4 1.41-1.41L11 14.17l5.59-5.59L18 10l-7 7z" fill="currentColor"/></svg>
-            Plan My Project
+            Generate My Trek
           </button>
         </div>
         <div class="planner-chat">
@@ -483,12 +483,12 @@
             <div class="chat-message ai">
               <div class="chat-avatar">AI</div>
               <div class="chat-bubble">
-                <p>Welcome! I'm your AI project planning assistant. Set your preferences on the left and click <strong>Plan My Project</strong> to get a personalized production estimate and recommendation!</p>
+                <p>Assalam o Alaikum! I'm your AI travel planning assistant. Set your preferences on the left and click <strong>Generate My Trek</strong> to get a personalized Pakistan itinerary!</p>
               </div>
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" id="plannerChatInput" placeholder="Ask about our services, pricing, packages..." aria-label="Chat message input">
+            <input type="text" id="plannerChatInput" placeholder="Ask about Skardu, Naltar, K2 treks..." aria-label="Chat message input">
             <button class="chat-send-btn" id="plannerChatSendBtn" aria-label="Send message">
               <svg viewBox="0 0 24 24" width="20" height="20"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/></svg>
             </button>
@@ -520,9 +520,9 @@
        <section class="booking section" id="booking">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="section-tag">Book a Service</span>
-        <h2 class="section-title">Book Your Production</h2>
-        <p class="section-description">Simple, transparent booking in just a few steps. No hidden fees — honest pricing from a professional team.</p>
+        <span class="section-tag">Book a Trek</span>
+        <h2 class="section-title">Book Your Adventure</h2>
+        <p class="section-description">Simple, transparent booking in just a few steps. No hidden fees — honest pricing from a trusted team.</p>
       </div>
       <div class="booking-wizard reveal-up">
         <div class="wizard-steps" role="tablist" aria-label="Booking steps">
@@ -554,14 +554,14 @@
         <div class="wizard-body">
           <!-- Step 1: Destination -->
           <div class="wizard-panel active" data-panel="1" role="tabpanel">
-            <h3>Select a service</h3>
+            <h3>Select a destination</h3>
             <div class="booking-destinations" id="bookingDestinations">
               <!-- Injected by JS -->
             </div>
           </div>
           <!-- Step 2: Dates -->
           <div class="wizard-panel" data-panel="2" role="tabpanel">
-            <h3>When is your event/project?</h3>
+            <h3>When do you want to travel?</h3>
             <div class="date-picker-group">
               <div class="date-field">
                 <label for="bookingCheckIn">Start Date</label>
@@ -576,12 +576,12 @@
           </div>
           <!-- Step 3: Travelers -->
           <div class="wizard-panel" data-panel="3" role="tabpanel">
-            <h3>Project details</h3>
+            <h3>Traveler details</h3>
             <div class="traveler-selectors">
               <div class="traveler-row">
                 <div class="traveler-info">
-                  <span class="traveler-type">Crew Members</span>
-                  <span class="traveler-desc">Camera operators, etc.</span>
+                  <span class="traveler-type">Adults</span>
+                  <span class="traveler-desc">Ages 13+</span>
                 </div>
                 <div class="traveler-counter">
                   <button class="counter-btn minus" data-target="adults" aria-label="Decrease adults">−</button>
@@ -591,8 +591,8 @@
               </div>
               <div class="traveler-row">
                 <div class="traveler-info">
-                  <span class="traveler-type">Cameras</span>
-                  <span class="traveler-desc">Number of camera angles</span>
+                  <span class="traveler-type">Children</span>
+                  <span class="traveler-desc">Ages 2–12</span>
                 </div>
                 <div class="traveler-counter">
                   <button class="counter-btn minus" data-target="children" aria-label="Decrease children">−</button>
@@ -602,8 +602,8 @@
               </div>
               <div class="traveler-row">
                 <div class="traveler-info">
-                  <span class="traveler-type">Editing Hours</span>
-                  <span class="traveler-desc">Post-production time</span>
+                  <span class="traveler-type">Porters</span>
+                  <span class="traveler-desc">For trekking expeditions</span>
                 </div>
                 <div class="traveler-counter">
                   <button class="counter-btn minus" data-target="infants" aria-label="Decrease porters">−</button>
@@ -627,7 +627,7 @@
                 <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="40" cy="40" r="38" fill="none" stroke="#2D6A4F" stroke-width="3"/><path d="M24 40l10 10 22-22" fill="none" stroke="#2D6A4F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <h3>Booking Confirmed!</h3>
-              <p>Your production is booked! Check your email for confirmation details, project brief, and next steps.</p>
+              <p>Your adventure is booked! Check your email for confirmation details, packing list, and next steps.</p>
               <p class="booking-ref">Booking Reference: <strong id="bookingRef">SP-2026-XXXXX</strong></p>
             </div>
           </div>

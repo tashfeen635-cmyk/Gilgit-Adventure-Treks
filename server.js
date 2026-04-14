@@ -49,6 +49,8 @@ const submitLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 app.use('/api/users/login', authLimiter);
 app.use('/api/users/register', authLimiter);
+app.use('/api/users/forgot-password', authLimiter);
+app.use('/api/users/reset-password', authLimiter);
 app.use('/api/bookings', submitLimiter);
 app.use('/api/contact', submitLimiter);
 app.use('/api/subscribers', submitLimiter);

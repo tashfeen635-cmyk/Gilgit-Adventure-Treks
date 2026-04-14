@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true, minlength: 6 },
   phone: { type: String, default: '' },
   avatar: { type: String, default: '' },
-  location: { type: String, default: '' }
+  location: { type: String, default: '' },
+  resetCode: { type: String, default: null },
+  resetCodeExpiry: { type: Date, default: null }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

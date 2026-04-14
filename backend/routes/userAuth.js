@@ -1,11 +1,13 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const connectDB = require('../config/db');
 const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Review = require('../models/Review');
 const LoginLog = require('../models/LoginLog');
 const userAuth = require('../middleware/userAuth');
+const { sendPasswordResetCode } = require('../utils/mailer');
 
 // POST /api/users/register
 router.post('/register', async (req, res) => {
@@ -142,6 +144,80 @@ router.get('/my-reviews', userAuth, async (req, res) => {
   } catch (err) {
     console.error('Get user reviews error:', err.message);
     res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// POST /api/users/forgot-password
+router.post('/forgot-password', async (req, res) => {
+  try {
+    await connectDB();
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (user) {
+      const code = crypto.randomInt(100000, 999999).toString();
+      user.resetCode = code;
+      user.resetCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+      await user.save();
+
+      sendPasswordResetCode({ email: user.email, name: user.name, code }).catch(err => {
+        console.error('[forgot-password] Email send error:', err.message);
+      });
+    }
+
+    // Always return success to prevent email enumeration
+    res.json({ message: 'If that email is registered, a verification code has been sent.' });
+  } catch (err) {
+    console.error('Forgot password error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// POST /api/users/reset-password
+router.post('/reset-password', async (req, res) => {
+  try {
+    await connectDB();
+    const { email, code, newPassword } = req.body;
+
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ message: 'Email, code, and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user || !user.resetCode || !user.resetCodeExpiry) {
+      return res.status(400).json({ message: 'Invalid or expired reset code' });
+    }
+
+    if (user.resetCode !== code.trim()) {
+      return res.status(400).json({ message: 'Invalid or expired reset code' });
+    }
+
+    if (new Date() > user.resetCodeExpiry) {
+      user.resetCode = null;
+      user.resetCodeExpiry = null;
+      await user.save();
+      return res.status(400).json({ message: 'Reset code has expired. Please request a new one.' });
+    }
+
+    user.password = newPassword;
+    user.resetCode = null;
+    user.resetCodeExpiry = null;
+    await user.save();
+
+    res.json({ message: 'Password reset successful. You can now log in with your new password.' });
+  } catch (err) {
+    console.error('Reset password error:', err.message);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

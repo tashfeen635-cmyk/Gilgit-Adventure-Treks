@@ -424,4 +424,76 @@ async function sendAdminNewMessageNotification(contact) {
   return { sent: true, messageId: info.messageId };
 }
 
-module.exports = { sendSubscriberConfirmation, sendBookingConfirmation, sendContactAutoReply, sendAdminNewBookingNotification, sendAdminNewMessageNotification };
+function buildPasswordResetHtml(name, code) {
+  const displayName = name && name.trim() ? name.trim() : 'there';
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Password Reset Code</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;color:#1a2332;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+          <tr>
+            <td style="background:#1B4332;padding:32px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:24px;letter-spacing:0.5px;">Gilgit Adventure Treks</h1>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,0.8);font-size:14px;">Password Reset</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:40px 32px 24px;">
+              <h2 style="margin:0 0 16px;color:#1a2332;font-size:22px;">Hi ${escapeHtml(displayName)},</h2>
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3a4658;">
+                We received a request to reset your password. Use the verification code below to complete the process:
+              </p>
+              <div style="text-align:center;margin:32px 0;">
+                <div style="display:inline-block;background:#f0fdf4;border:2px solid #1B4332;border-radius:12px;padding:20px 40px;">
+                  <span style="font-size:36px;font-weight:700;letter-spacing:8px;color:#1B4332;">${escapeHtml(code)}</span>
+                </div>
+              </div>
+              <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#64748b;text-align:center;">
+                This code expires in <strong>10 minutes</strong>.
+              </p>
+              <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#64748b;">
+                If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f4f6f9;padding:24px 32px;text-align:center;font-size:12px;color:#6b7684;">
+              <p style="margin:0 0 8px;">&copy; ${new Date().getFullYear()} Gilgit Adventure Treks. All rights reserved.</p>
+              <p style="margin:0;">You received this email because a password reset was requested for your account.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+async function sendPasswordResetCode({ email, name, code }) {
+  const transporter = getTransporter();
+  if (!transporter) return { sent: false, reason: 'email_not_configured' };
+
+  const fromName = 'Gilgit Adventure Treks';
+  const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+
+  const info = await transporter.sendMail({
+    from: `"${fromName}" <${fromAddress}>`,
+    to: email,
+    subject: 'Password Reset Code — Gilgit Adventure Treks',
+    html: buildPasswordResetHtml(name, code),
+    text: `Hi ${name || 'there'},\n\nYour password reset code is: ${code}\n\nThis code expires in 10 minutes.\n\nIf you did not request this, please ignore this email.\n\n© ${new Date().getFullYear()} Gilgit Adventure Treks`
+  });
+
+  return { sent: true, messageId: info.messageId };
+}
+
+module.exports = { sendSubscriberConfirmation, sendBookingConfirmation, sendContactAutoReply, sendAdminNewBookingNotification, sendAdminNewMessageNotification, sendPasswordResetCode };
